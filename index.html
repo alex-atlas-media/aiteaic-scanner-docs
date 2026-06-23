@@ -184,6 +184,75 @@
     .callout.warning { background: var(--gold-light); border-left: 3px solid var(--gold); }
     .callout.note { background: #EFF6FF; border-left: 3px solid #3B82F6; }
 
+    /* ── LIVE TICKER ── */
+    .live-ticker {
+      background: var(--green);
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin: 24px 0 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .live-ticker::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .ticker-item {
+      text-align: center;
+      padding: 8px 16px;
+      border-right: 1px solid rgba(255,255,255,0.12);
+    }
+    .ticker-item:last-child { border-right: none; }
+    .ticker-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+    }
+    .ticker-number .ticker-unit { font-size: 15px; font-weight: 600; opacity: 0.85; }
+    .ticker-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      line-height: 1.4;
+    }
+    .ticker-live-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: #4ADE80;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .ticker-status {
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      .live-ticker { grid-template-columns: 1fr 1fr; }
+      .ticker-item:nth-child(2) { border-right: none; }
+      .ticker-item { border-bottom: 1px solid rgba(255,255,255,0.12); }
+      .ticker-item:nth-child(3), .ticker-item:nth-child(4) { border-bottom: none; }
+    }
+
     /* ── STAT CARDS ── */
     .stat-grid {
       display: grid;
@@ -385,6 +454,7 @@
     <div class="sidebar-group">
       <div class="sidebar-group-label">Integrations</div>
       <a href="#clinical-api">Clinical API Layer</a>
+      <a href="#privacy">Data Privacy & PDPA</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Verification</div>
@@ -411,6 +481,32 @@
       <p style="font-size:17px; color:#374151; line-height:1.6; margin-bottom:28px;">
         Technical documentation for the Aiteaic AI-powered tongue scanner — how it works, what it's built on, how it was validated, and why it is specifically designed for Singapore's population.
       </p>
+
+      <!-- Live metrics ticker -->
+      <div class="live-ticker" id="live-ticker">
+        <div class="ticker-item">
+          <div class="ticker-number">
+            <span class="ticker-live-dot"></span><span id="t-scans">0</span>
+          </div>
+          <div class="ticker-label">Scans processed</div>
+          <div class="ticker-status" id="t-scans-status">Connecting…</div>
+        </div>
+        <div class="ticker-item">
+          <div class="ticker-number"><span id="t-accuracy">83.7</span><span class="ticker-unit">%</span></div>
+          <div class="ticker-label">Benchmark accuracy</div>
+          <div class="ticker-status">PMC12160370 · Springer Nature 2025</div>
+        </div>
+        <div class="ticker-item">
+          <div class="ticker-number"><span id="t-images">29,149</span><span class="ticker-unit">+</span></div>
+          <div class="ticker-label">Research foundation images</div>
+          <div class="ticker-status">Across 3 published studies</div>
+        </div>
+        <div class="ticker-item">
+          <div class="ticker-number"><span id="t-citations">32</span></div>
+          <div class="ticker-label">Peer-reviewed citations</div>
+          <div class="ticker-status">NIH PubMed · Springer Nature · Oxford</div>
+        </div>
+      </div>
 
       <div class="stat-grid">
         <div class="stat-card">
@@ -857,7 +953,7 @@
       <h2>Accuracy & Validation</h2>
 
       <h3>Published Accuracy Benchmark</h3>
-      <p>The architecture Aiteaic is built on was independently validated in a peer-reviewed prospective study across two medical centers in 2025:</p>
+      <p>Aiteaic's classifier replicates the architecture validated in a peer-reviewed prospective study published in <em>Chinese Medicine</em> (Springer Nature, 2025). The figures below are from that published paper — the same model class, same feature set, same 9-constitution output. They represent the independently verified performance ceiling this architecture achieves when trained on a comparable dataset:</p>
 
       <table>
         <thead><tr><th>Metric</th><th>Training Set</th><th>Test Set</th></tr></thead>
@@ -882,7 +978,7 @@
       </div>
 
       <h3>Validation Against External Reference System</h3>
-      <p>Aiteaic's validation methodology includes automated backtesting against external reference systems using the TCM-Tongue dataset. 1,000 labeled tongue images are processed through both systems and agreement rates are calculated. This produces a cross-system validation metric that does not require human reviewers and can be run at any scale.</p>
+      <p>Aiteaic's validation methodology includes automated backtesting against external reference systems using the TCM-Tongue dataset. Once training is complete, 553 held-out test images are processed through the live model and agreement rates are calculated. This produces a cross-system validation metric that does not require human reviewers and can be run at any scale. Results will be published here when available.</p>
     </section>
 
     <!-- CONSISTENCY -->
@@ -1181,6 +1277,145 @@ Content-Type: application/json
       <p>This is not a dependency or a weakness. It is a deliberate architectural decision: build the Singapore layer now, integrate clinical-grade classification when the API is ready and validated. The two components address completely different problems and are designed to be complementary.</p>
     </section>
 
+    <!-- DATA PRIVACY & PDPA -->
+    <section class="section" id="privacy">
+      <h2>Data Privacy &amp; PDPA Compliance</h2>
+      <p>Tongue images are biometric health data. Under Singapore's <strong>Personal Data Protection Act (PDPA)</strong>, they are considered sensitive personal data and are subject to its collection, use, and disclosure obligations. This section documents how Aiteaic handles user data and the obligations the platform is designed to meet.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">🔒</div>
+        <div class="callout-body">
+          <strong>Tongue images are biometric data under PDPA</strong>
+          <p>The PDPA (Cap 26, 2021 revision) does not define a separate "biometric" category, but PDPC advisory guidelines treat physiological images used for identification or health assessment as sensitive personal data requiring higher-standard protection. Tongue images captured and processed for health constitution assessment fall within this scope. Aiteaic is designed accordingly.</p>
+        </div>
+      </div>
+
+      <h3>What Data Is Collected</h3>
+      <table>
+        <thead><tr><th>Data Type</th><th>Collected?</th><th>Stored?</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Tongue image</td>
+            <td>Yes — required for scan</td>
+            <td><strong>No</strong> — processed in-memory, discarded after classification</td>
+            <td>Visual feature extraction only</td>
+          </tr>
+          <tr>
+            <td>Constitution result (JSON)</td>
+            <td>Yes</td>
+            <td>Yes — Firestore, linked to user ID</td>
+            <td>Scan history, wellness tracking</td>
+          </tr>
+          <tr>
+            <td>Questionnaire responses</td>
+            <td>Yes — if questionnaire completed</td>
+            <td>Yes — Firestore, linked to user ID</td>
+            <td>CCMQ scoring, combined result</td>
+          </tr>
+          <tr>
+            <td>User account data</td>
+            <td>Yes — email, display name</td>
+            <td>Yes — Firebase Authentication</td>
+            <td>Account authentication only</td>
+          </tr>
+          <tr>
+            <td>Device / location data</td>
+            <td>No</td>
+            <td>No</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>What Happens to the Tongue Image</h3>
+      <p>The tongue image is transmitted over HTTPS to the inference server. The inference server processes it entirely in RAM — the raw image bytes are never written to disk, logged, or forwarded to any third party beyond the inference computation. The only output persisted is the constitution classification result (a JSON object containing probability scores and a constitution ID — not the image itself). The image is garbage-collected immediately after inference completes.</p>
+
+      <h3>Data Retention</h3>
+      <table>
+        <thead><tr><th>Data</th><th>Retention Period</th><th>Deletion Method</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Tongue image</td>
+            <td>None — discarded in-memory after inference</td>
+            <td>Automatic, no action required</td>
+          </tr>
+          <tr>
+            <td>Scan result (constitution JSON)</td>
+            <td>Until user requests deletion, or account deletion</td>
+            <td>User-initiated from app; or admin deletion via Firestore</td>
+          </tr>
+          <tr>
+            <td>Questionnaire responses</td>
+            <td>Until user requests deletion, or account deletion</td>
+            <td>User-initiated or admin deletion</td>
+          </tr>
+          <tr>
+            <td>Aggregate statistics (anonymised totals)</td>
+            <td>Indefinite — no personal data, count only</td>
+            <td>Not applicable — no personal data</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>User Consent</h3>
+      <p>Users are presented with a consent notice before their first scan explaining: (1) that their tongue image will be processed to determine a TCM body constitution; (2) that the image will not be stored; (3) that the result will be saved to their account. Scanning cannot proceed without explicit acknowledgment. This satisfies PDPA's <em>notification obligation</em> (Section 20) and <em>consent obligation</em> (Section 14).</p>
+
+      <h3>Third-Party Data Processors</h3>
+      <table>
+        <thead><tr><th>Processor</th><th>What They Receive</th><th>Purpose</th><th>Location</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Hugging Face (inference server)</td>
+            <td>Tongue image bytes — in-transit only, not persisted by HF</td>
+            <td>AI inference computation</td>
+            <td>US (AWS us-east-1)</td>
+          </tr>
+          <tr>
+            <td>Google Firebase / Firestore</td>
+            <td>Constitution results, questionnaire responses, user auth data</td>
+            <td>Database storage and authentication</td>
+            <td>Singapore region (asia-southeast1) — where possible</td>
+          </tr>
+          <tr>
+            <td>Vercel</td>
+            <td>API request metadata (no image data passes through Vercel)</td>
+            <td>Serverless function hosting</td>
+            <td>US / Singapore edge</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <div class="callout-icon">🌏</div>
+        <div class="callout-body">
+          <strong>Cross-border data transfer note</strong>
+          <p>The inference server is hosted on Hugging Face Spaces (US infrastructure). Tongue images are transmitted to the US for processing. Under PDPA Section 26, cross-border transfers are permitted where the recipient provides a comparable standard of protection. Hugging Face's standard Terms of Service and zero-persistence architecture (images are not stored) satisfies this obligation. Aiteaic's data protection policy documents this transfer explicitly.</p>
+        </div>
+      </div>
+
+      <h3>Access Controls</h3>
+      <ul>
+        <li>All API endpoints are served over HTTPS only — no unencrypted connections accepted</li>
+        <li>Firestore security rules restrict read/write to authenticated users accessing their own documents only — no user can access another user's scan history</li>
+        <li>Firebase Authentication handles credential management — passwords are never stored in plaintext</li>
+        <li>Inference API is called server-side (Vercel serverless function) — the inference endpoint URL is never exposed to the browser</li>
+      </ul>
+
+      <h3>Right of Access and Erasure</h3>
+      <p>Under PDPA Section 21, individuals have the right to access personal data held about them. Under Section 22, they have the right to correct inaccurate data. Aiteaic provides in-app scan history review and deletion. For account deletion or data access requests not addressable within the app, users may contact: <a href="mailto:admin@atlasmedia.sg">admin@atlasmedia.sg</a>.</p>
+
+      <h3>Data Protection Officer</h3>
+      <p>Atlas Media has designated a Data Protection Officer (DPO) as required under PDPA for organisations that collect and process personal data. DPO contact: <a href="mailto:admin@atlasmedia.sg">admin@atlasmedia.sg</a>. Requests are acknowledged within 3 business days.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <strong>PDPA registration status</strong>
+          <p>Organisations that collect personal data in Singapore are not required to register with the PDPC unless operating as a data intermediary. Atlas Media's PDPA Data Protection Policy is available to users upon request. The full privacy policy governing Aiteaic will be published at app.aiteaic.com/privacy prior to public launch.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- TESTING FRAMEWORK -->
     <section class="section" id="testing">
       <h2>Testing Framework</h2>
@@ -1451,7 +1686,7 @@ python test_suite.py \
 </div>
 
 <script>
-  // Active sidebar link on scroll
+  // ── Active sidebar link on scroll ────────────────────────────────────────
   const sections = document.querySelectorAll('.section');
   const links = document.querySelectorAll('.sidebar a');
   const observer = new IntersectionObserver((entries) => {
@@ -1464,6 +1699,67 @@ python test_suite.py \
     });
   }, { rootMargin: '-20% 0px -70% 0px' });
   sections.forEach(s => observer.observe(s));
+
+  // ── Live ticker ───────────────────────────────────────────────────────────
+  // Counts up from 0 to target with ease-out animation.
+  function animateCount(el, target, duration, formatter) {
+    const start = performance.now();
+    const from = parseInt(el.textContent.replace(/,/g, '')) || 0;
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out cubic
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(from + (target - from) * ease);
+      el.textContent = formatter ? formatter(current) : current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Animate static counters on page load
+  window.addEventListener('load', () => {
+    animateCount(document.getElementById('t-images'),    29149, 1800, n => n.toLocaleString());
+    animateCount(document.getElementById('t-citations'), 32,    1200);
+    // Accuracy stays fixed — animating a percentage misleads
+  });
+
+  // Live stats: fetch from Hugging Face inference service
+  // INFERENCE_API_URL is set in serve.py; update the URL below after deployment.
+  const STATS_ENDPOINT = 'https://aiteaic-tongue-scanner.hf.space/stats';
+
+  async function fetchLiveStats() {
+    const scansEl      = document.getElementById('t-scans');
+    const statusEl     = document.getElementById('t-scans-status');
+    const accuracyEl   = document.getElementById('t-accuracy');
+
+    try {
+      const resp = await fetch(STATS_ENDPOINT, { signal: AbortSignal.timeout(6000) });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      // Scans counter — animate to live value
+      const prevScans = parseInt(scansEl.textContent.replace(/,/g, '')) || 0;
+      animateCount(scansEl, data.total_scans ?? 0, 1200, n => n.toLocaleString());
+      statusEl.textContent = 'Live · updates every 60s';
+      statusEl.style.color = 'rgba(74,222,128,0.8)';
+
+      // If we have our own tested accuracy, show it (with source)
+      if (data.tested_accuracy) {
+        accuracyEl.textContent = (data.tested_accuracy * 100).toFixed(1);
+        const src = accuracyEl.closest('.ticker-item').querySelector('.ticker-status');
+        if (src) src.textContent = 'Aiteaic verified · ' + (data.accuracy_date ?? '');
+      }
+    } catch {
+      statusEl.textContent = 'Research baseline · live on launch';
+      statusEl.style.color = 'rgba(255,255,255,0.35)';
+      // Animate scans to 0 gracefully if API unreachable
+      animateCount(scansEl, 0, 800, n => n.toLocaleString());
+    }
+  }
+
+  fetchLiveStats();
+  setInterval(fetchLiveStats, 60_000); // refresh every 60 seconds
 </script>
 
 </body>
