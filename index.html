@@ -378,6 +378,10 @@
       <a href="#limitations">Known Limitations</a>
     </div>
     <div class="sidebar-group">
+      <div class="sidebar-group-label">Integrations</div>
+      <a href="#clinical-api">Clinical API Layer</a>
+    </div>
+    <div class="sidebar-group">
       <div class="sidebar-group-label">References</div>
       <a href="#sources">All Sources</a>
     </div>
@@ -411,8 +415,16 @@
         </div>
         <div class="stat-card">
           <div class="stat-number">21,948</div>
-          <div class="stat-label">Validation study participants</div>
-          <div class="stat-source">Wang Qi et al., 2009</div>
+          <div class="stat-label">Framework validation participants</div>
+          <div class="stat-source">Wang Qi epidemiological study, 9 provinces, 2009</div>
+        </div>
+      </div>
+
+      <div class="callout note">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-body">
+          <strong>On the 300,000+ figure</strong>
+          <p>Some sources cite 300,000+ participants in relation to Wang Qi's work. This refers to his broader 50-year research programme across multiple studies — not a single trial. The specific epidemiological study that produced the 9-constitution classification used 21,948 participants across 9 Chinese provinces. Both figures are real; they describe different scopes of the same body of work.</p>
         </div>
       </div>
 
@@ -781,6 +793,71 @@
       </ul>
     </section>
 
+    <!-- CLINICAL API -->
+    <section class="section" id="clinical-api">
+      <h2>Clinical API Integration Layer</h2>
+      <p>Aiteaic's in-house model is built on peer-reviewed research and a publicly auditable dataset. It is transparent, Singapore-calibrated, and deterministic. It is also honest about what it is: a <strong>research-grade foundation model</strong> trained on 6,719 images — not a proprietary clinical system with years of hospital-collected data behind it.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">🔬</div>
+        <div class="callout-body">
+          <strong>Honest comparison: research-grade vs clinical-grade AI</strong>
+          <p>Specialized tongue diagnosis AI companies — built specifically for TCM clinical settings — operate at a different data scale. Their models are trained on proprietary datasets collected from clinical environments: tens of thousands of images, labeled by practicing TCM physicians in controlled settings, often with multi-year training pipelines. This produces higher raw accuracy on their test sets. Our 83.7% figure comes from the same class of research-grade model we build on. A clinical-grade system from a specialized vendor would likely exceed this on their own benchmark — though independent Singapore-specific validation would still be needed.</p>
+        </div>
+      </div>
+
+      <h3>Why This Doesn't Undermine the Product</h3>
+      <p>The gap between research-grade and clinical-grade accuracy is real — but it is not the primary value Aiteaic delivers. The clinical AI gets the constitution type. Aiteaic delivers what happens next: the Singapore-calibrated wellness profile, the product recommendation engine, the questionnaire layer, the B2B platform, and the growing local dataset. A clinical API system on its own does not do any of these things.</p>
+      <p>83.7% is also not a weak number in this context. It is within the range of experienced human TCM practitioners assessing tongue images independently. For a wellness profiling tool — not a surgical diagnostic — this is a clinically meaningful baseline.</p>
+
+      <h3>The Integration Roadmap</h3>
+      <p>The architecture is designed from the ground up to support a clinical API as an optional enhanced layer. When a specialized tongue diagnosis API becomes available and validated for Singapore's population, it can be inserted directly into the classification step of the pipeline — replacing or running in parallel with the in-house model.</p>
+
+      <table>
+        <thead>
+          <tr><th>Configuration</th><th>Classification Engine</th><th>Benefit</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Current (v1)</strong></td>
+            <td>In-house model · Research-grade · Singapore-calibrated</td>
+            <td>Full control, transparent, auditable, available now</td>
+          </tr>
+          <tr>
+            <td><strong>Future (v2)</strong></td>
+            <td>Clinical API layer + in-house model running in parallel</td>
+            <td>Cross-validated result: two independent systems must agree</td>
+          </tr>
+          <tr>
+            <td><strong>Future (v3)</strong></td>
+            <td>Clinical API primary + in-house as Singapore calibration filter</td>
+            <td>Clinical-grade accuracy with local population adjustment</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>What a Clinical API Adds</h3>
+      <ul>
+        <li><strong>Larger proprietary training data</strong> — clinical systems have collected tongue images at hospital scale, typically 10x–100x the size of public research datasets</li>
+        <li><strong>Multi-physician label consensus</strong> — labels validated by multiple practitioners, reducing individual bias</li>
+        <li><strong>Richer feature output</strong> — clinical systems often return quantitative tongue indices (colour score, greasy index, etc.) that add a second data layer to the constitution result</li>
+        <li><strong>Clinical credibility signal</strong> — naming a recognized clinical AI partner in PR and investor materials carries additional credibility beyond academic citations</li>
+      </ul>
+
+      <h3>The Combined Value Proposition</h3>
+      <p>The eventual architecture — Aiteaic's Singapore-calibrated product layer sitting on top of a clinical AI classification engine — is stronger than either component alone:</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-body">
+          <strong>Clinical API = the tongue intelligence. Aiteaic = everything that makes it useful in Singapore.</strong>
+          <p>The clinical API knows what constitution you are. Aiteaic knows what to do about it — in Singapore, with Singapore products, Singapore dietary context, Singapore healthcare alignment, and a growing Singapore population dataset that the clinical API will never have.</p>
+        </div>
+      </div>
+
+      <p>This is not a dependency or a weakness. It is a deliberate architectural decision: build the Singapore layer now, integrate clinical-grade classification when the API is ready and validated. The two components address completely different problems and are designed to be complementary.</p>
+    </section>
+
     <!-- SOURCES -->
     <section class="section" id="sources">
       <h2>All Sources</h2>
@@ -879,6 +956,14 @@
         <div class="source-body">
           <div class="source-title">Singapore MOH TCM Sandbox Initiative — 18 Proposals for Public Healthcare Integration</div>
           <div class="source-meta">National Neuroscience Institute · Singapore · <a href="https://www.nni.com.sg/news/announcements/moh-studying-18-proposals-to-integrate-tcm-into-public-healthcar" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-gov">MOH SG</span>
+        <div class="source-body">
+          <div class="source-title">"1 in 5 adult Singaporeans use TCM services every year" — Minister for Health Ong Ye Kung</div>
+          <div class="source-meta">Official speech · Forum on Evidence-Based TCM in Western Medicine Practice · July 2025 · Source: 2022 National Population Health Survey · <a href="https://www.moh.gov.sg/newsroom/speech-by-mr-ong-ye-kung--minister-for-health--at-the-forum-on-the-use-of-evidence-based-traditional-chinese-medicine-in-western-medicine-practice/" target="_blank">Read →</a></div>
         </div>
       </div>
 
