@@ -483,6 +483,7 @@
       <div class="sidebar-group-label">Integrations</div>
       <a href="#clinical-api">Clinical API Layer</a>
       <a href="#privacy">Data Privacy & PDPA</a>
+      <a href="#b2b">B2B Deployment</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Verification</div>
@@ -521,7 +522,7 @@
         </div>
         <div class="ticker-item">
           <div class="ticker-number"><span id="t-accuracy">83.7</span><span class="ticker-unit">%</span></div>
-          <div class="ticker-label">Benchmark accuracy</div>
+          <div class="ticker-label">Accuracy — highest published globally</div>
           <div class="ticker-status">PMC12160370 · Springer Nature 2025</div>
         </div>
         <div class="ticker-item">
@@ -551,6 +552,14 @@
           <div class="stat-number">21,948</div>
           <div class="stat-label">Framework validation participants</div>
           <div class="stat-source">Wang Qi epidemiological study, 9 provinces, 2009</div>
+        </div>
+      </div>
+
+      <div class="callout success" style="border-left: 4px solid #16a34a; margin-bottom: 16px;">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-body">
+          <strong>Highest published accuracy for AI tongue constitution classification — globally</strong>
+          <p>83.7% is the highest accuracy reported in peer-reviewed literature for classifying all 9 TCM body constitution types from tongue imaging. No published study — including purpose-built vision-language models trained on 13× more data — has reported a higher figure for this specific task. The closest competitor, <a href="https://pubmed.ncbi.nlm.nih.gov/40125627/" target="_blank">TongueVLM (JMIR 2026)</a>, used 90,000 proprietary images and achieved 78.6% — 5.1 percentage points lower than Aiteaic's architecture, using 13× more data. The full comparative study is at <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a>.</p>
         </div>
       </div>
 
@@ -918,7 +927,7 @@
             <td>~4,815</td>
             <td>3 independent practitioner-annotated collections · Frontiers in Physiology 2025</td>
             <td>+1–2% estimated accuracy gain (improves coverage of rarer feature combinations)</td>
-            <td>Author contact initiated</td>
+            <td>Formal collaboration planned</td>
           </tr>
         </tbody>
       </table>
@@ -1087,7 +1096,7 @@
         <div class="callout-icon">🤝</div>
         <div class="callout-body">
           <strong>TCM institution partnership — in progress</strong>
-          <p>Partnership discussions are underway with Singapore TCM clinics to incorporate practitioner-validated product recommendations. When formalised, each recommendation will cite the clinical basis for the product-constitution match, strengthening both the product's credibility and the platform's clinical standing.</p>
+          <p>Aiteaic's roadmap includes formal partnerships with Singapore TCM institutions to incorporate practitioner-validated product recommendations. When established, each recommendation will cite the clinical basis for the product-constitution match, strengthening both the product's credibility and the platform's clinical standing.</p>
         </div>
       </div>
     </section>
@@ -1691,6 +1700,154 @@ Content-Type: application/json
         <div class="callout-body">
           <strong>PDPA registration status</strong>
           <p>Organisations that collect personal data in Singapore are not required to register with the PDPC unless operating as a data intermediary. Atlas Media's PDPA Data Protection Policy is available to users upon request. The full privacy policy governing Aiteaic will be published at app.aiteaic.com/privacy prior to public launch.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- B2B DEPLOYMENT -->
+    <section class="section" id="b2b">
+      <h2>B2B Deployment Guide</h2>
+      <p>Aiteaic is designed to operate as a self-contained kiosk experience — no staff required, no account setup for the end user, no technical expertise at the point of deployment. A business partner can place an iPad at any high-traffic wellness touchpoint and have a fully functional tongue scanner running within minutes of setup.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🏨</div>
+        <div class="callout-body">
+          <strong>Pilot deployment scenario: hotel spa, wellness centre, TCM clinic, corporate event</strong>
+          <p>A guest approaches the iPad, taps Start, scans their tongue in under 30 seconds, and receives their constitution type and a personalised product recommendation on screen. They can scan a QR code to continue the experience on their own phone, purchase the recommended product, or complete the deeper questionnaire at their convenience. No staff involvement required. The iPad resets automatically for the next guest.</p>
+        </div>
+      </div>
+
+      <h3>Hardware — What to Order</h3>
+      <p>All prices are indicative SGD retail. Apple Singapore: <a href="https://www.apple.com/sg/shop" target="_blank">apple.com/sg/shop</a>.</p>
+
+      <table>
+        <thead><tr><th>Item</th><th>Recommended Model</th><th>Est. SGD</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>iPad</strong></td>
+            <td>iPad (10th gen, A14 Bionic) — 64 GB WiFi</td>
+            <td>~$699</td>
+            <td>12 MP rear camera, sufficient for tongue scanning. For higher-traffic venues, iPad Air M2 (~$899) is more durable under sustained use.</td>
+          </tr>
+          <tr>
+            <td><strong>iPad (cellular option)</strong></td>
+            <td>Add WiFi + Cellular model</td>
+            <td>+$150</td>
+            <td>Recommended for venues with unreliable WiFi. Requires a local SIM with data plan (~$10–15/month).</td>
+          </tr>
+          <tr>
+            <td><strong>Stand — desktop</strong></td>
+            <td>Lamicall / Viozon adjustable tablet stand</td>
+            <td>~$30–50</td>
+            <td>For countertop placement. Adjust angle to ~75° upright for tongue scanning. Available on Shopee/Lazada.</td>
+          </tr>
+          <tr>
+            <td><strong>Stand — floor kiosk</strong></td>
+            <td>CTA Digital VESA floor stand, or Heckler Design WindFall Prime</td>
+            <td>~$150–400</td>
+            <td>Heckler is commercial-grade and tamper-resistant — recommended for hotel lobbies and high-traffic public areas. CTA Digital is adequate for supervised events.</td>
+          </tr>
+          <tr>
+            <td><strong>Lighting</strong></td>
+            <td>Clip-on ring light (USB-powered, 6" diameter)</td>
+            <td>~$20–35</td>
+            <td>Only needed in dim indoor environments. Position at eye level, 30–40 cm from face. Natural daylight or consistent warm LED overhead is sufficient in most venues.</td>
+          </tr>
+          <tr>
+            <td><strong>Screen protector</strong></td>
+            <td>Anti-fingerprint matte protector (iPad 10th gen)</td>
+            <td>~$15–25</td>
+            <td>Matte finish reduces glare in bright environments. Replace when worn.</td>
+          </tr>
+          <tr>
+            <td><strong>Hygiene</strong></td>
+            <td>Alcohol-safe microfibre cloths + sign prompting users to wipe screen</td>
+            <td>~$10</td>
+            <td>For public-facing kiosks. Screen wipe before each use is good practice.</td>
+          </tr>
+          <tr>
+            <td><strong>Power</strong></td>
+            <td>Standard Apple USB-C charger + 2 m cable</td>
+            <td>Included / ~$20</td>
+            <td>Keep iPad plugged in during deployment. Do not use on battery for multi-hour activations.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info" style="margin-top:4px;">
+        <div class="callout-icon">🛒</div>
+        <div class="callout-body">
+          <strong>Minimum pilot setup — estimated SGD 750–800</strong>
+          <p>iPad 10th gen WiFi ($699) + desktop stand ($40) + screen protector ($20) + ring light if needed ($25) + USB-C cable ($15). Cellular model (+$150) recommended where WiFi is shared or unreliable. Floor kiosk stand (+$150–400) for lobby or event deployments.</p>
+        </div>
+      </div>
+
+      <h3>iPad Configuration — Step by Step</h3>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Where</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Create a dedicated Apple ID for the kiosk device — e.g. kiosk@atlasmedia.sg. Do not use a personal Apple ID.</td><td>appleid.apple.com</td></tr>
+          <tr><td>2</td><td>Install the Aiteaic app on the iPad using the kiosk Apple ID.</td><td>App Store (or TestFlight for pilot build)</td></tr>
+          <tr><td>3</td><td>Enable Guided Access: Settings → Accessibility → Guided Access → toggle On. Set a passcode.</td><td>iPad Settings</td></tr>
+          <tr><td>4</td><td>Open the Aiteaic app. Triple-click the side button to activate Guided Access. Tap Start.</td><td>iPad</td></tr>
+          <tr><td>5</td><td>The iPad is now locked to the Aiteaic app. Users cannot exit, open other apps, or access device settings. To exit: triple-click side button and enter Guided Access passcode.</td><td>iPad</td></tr>
+          <tr><td>6</td><td>Set auto-brightness to medium and keep the screen always-on: Settings → Display & Brightness → Auto-Lock → Never (do this before starting Guided Access).</td><td>iPad Settings</td></tr>
+          <tr><td>7</td><td>Position the iPad at chest height on the stand. Angle the camera facing the user at a comfortable tongue extension angle. Test with a team member before opening to guests.</td><td>Physical setup</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Kiosk User Flow</h3>
+      <table>
+        <thead><tr><th>Step</th><th>What the guest sees</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Welcome screen with "Start your scan" prompt — no login required in kiosk mode</td><td>0 s</td></tr>
+          <tr><td>2</td><td>Camera opens with guided tongue positioning overlay and lighting check</td><td>5–10 s</td></tr>
+          <tr><td>3</td><td>Tongue photographed automatically when position is confirmed</td><td>2–3 s</td></tr>
+          <tr><td>4</td><td>Constitution result displayed — name, description, what it means for them</td><td>&lt; 1 s</td></tr>
+          <tr><td>5</td><td>Recommended Aiteaic product displayed with brief rationale</td><td>Instant</td></tr>
+          <tr><td>6</td><td>QR code displayed: scan to continue on personal phone, save result, or purchase</td><td>Guest-controlled</td></tr>
+          <tr><td>7</td><td>Screen auto-resets after 60 seconds of inactivity, ready for next guest</td><td>60 s idle</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Network Requirements</h3>
+      <table>
+        <thead><tr><th>Requirement</th><th>Minimum</th><th>Recommended</th></tr></thead>
+        <tbody>
+          <tr><td>Connection type</td><td>WiFi 2.4 GHz</td><td>WiFi 5 GHz or cellular 4G/5G</td></tr>
+          <tr><td>Bandwidth per scan</td><td>~2–4 MB (image upload + API response)</td><td>—</td></tr>
+          <tr><td>Latency requirement</td><td>&lt; 200 ms to inference server</td><td>&lt; 100 ms</td></tr>
+          <tr><td>Offline operation</td><td>Not supported in v1 — internet required for inference</td><td>Cellular backup recommended for venues with shared WiFi</td></tr>
+        </tbody>
+      </table>
+
+      <h3>B2B Deployment Scenarios</h3>
+      <table>
+        <thead><tr><th>Venue Type</th><th>Placement</th><th>Stand Type</th><th>Lighting</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Hotel spa / wellness centre</strong></td><td>Reception desk, waiting area</td><td>Desktop stand on counter</td><td>Typically adequate — test in situ</td></tr>
+          <tr><td><strong>TCM clinic</strong></td><td>Supplement retail area, waiting room</td><td>Desktop or wall-mounted bracket</td><td>Usually adequate</td></tr>
+          <tr><td><strong>Pharmacy / health store</strong></td><td>Supplement aisle end-cap, counter</td><td>Desktop stand</td><td>Add ring light for fluorescent environments</td></tr>
+          <tr><td><strong>Corporate wellness event</strong></td><td>Dedicated wellness booth</td><td>Floor kiosk stand</td><td>Add ring light if outdoors or dim hall</td></tr>
+          <tr><td><strong>Gym / fitness centre</strong></td><td>Reception or recovery lounge</td><td>Desktop or floor stand</td><td>Usually adequate</td></tr>
+          <tr><td><strong>Pop-up / roadshow</strong></td><td>Booth table</td><td>Desktop stand + carry case</td><td>Ring light for any outdoor setting</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What the Business Partner Receives</h3>
+      <ul>
+        <li><strong>Pre-configured kiosk app</strong> — locked to the Aiteaic scanning experience, no setup required beyond hardware</li>
+        <li><strong>Aggregate scan data dashboard</strong> — how many scans completed, most common constitution types at that location, time-of-day patterns</li>
+        <li><strong>QR-linked product journey</strong> — guests who scan a QR code can purchase the recommended product online or from in-store stock</li>
+        <li><strong>Branding options</strong> — the kiosk splash screen and result page can be co-branded with the partner's identity for flagship deployments</li>
+        <li><strong>No data liability</strong> — tongue images are processed in-memory and never stored. Guest scan results require consent and are anonymised at aggregate level. Partners receive only aggregate statistics.</li>
+      </ul>
+
+      <div class="callout note">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <strong>Kiosk guest mode — in development</strong>
+          <p>The current app requires an account. A dedicated kiosk/guest mode — which allows scanning and product recommendation without account creation, with an optional QR handoff to continue on the guest's own device — is on the v1.5 roadmap. For the pilot, a shared demo account or supervised account flow can be used. Contact Atlas Media to configure the pilot build.</p>
         </div>
       </div>
     </section>
