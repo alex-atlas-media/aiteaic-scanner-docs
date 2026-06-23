@@ -956,56 +956,78 @@
       <p>Most competing consumer tongue apps route your image through a general-purpose vision LLM (GPT-4V, Gemini Vision, or similar) with a prompt like "classify this tongue into a TCM constitution type." This approach has three compounding problems: it is slow, non-deterministic, and structurally wrong for the task.</p>
 
       <table>
-        <thead><tr><th>Step</th><th>LLM wrapper approach</th><th>Aiteaic (ResNet-50 + MLP)</th></tr></thead>
+        <thead><tr><th></th><th>Generic LLM wrapper<br><small style="font-weight:400;opacity:0.85;">(GPT-4V / Gemini with a TCM prompt)</small></th><th>Best published VLM<br><small style="font-weight:400;opacity:0.85;">TongueVLM · JMIR 2026 · purpose-built</small></th><th>Aiteaic<br><small style="font-weight:400;opacity:0.85;">ResNet-50 + MLP · PMC12160370</small></th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Image processing</strong></td>
-            <td>Image tokenised and embedded into prompt (~1,000–4,000 tokens depending on resolution)</td>
-            <td>Passed through convolutional layers — 11 traditional indices computed, 26 deep features extracted</td>
+            <td><strong>Training data</strong></td>
+            <td>None specific to tongue diagnosis — general internet-scale pretraining</td>
+            <td>90,000 proprietary tongue images</td>
+            <td>6,719 CC0 practitioner-labeled images</td>
           </tr>
           <tr>
-            <td><strong>Classification step</strong></td>
-            <td>LLM generates a text explanation of the constitution — word by word, autoregressively. The model is "reasoning" out loud.</td>
-            <td>37-dimensional feature vector multiplied through two 8-node hidden layers → 9 softmax outputs. Pure matrix arithmetic.</td>
+            <td><strong>Classification method</strong></td>
+            <td>LLM generates a text description — autoregressive, word by word. Output is a sentence, not a score.</td>
+            <td>Vision-language model generates a constitution reasoning response</td>
+            <td>37-dim feature vector → 3 matrix multiplications → 9 probability scores. Pure arithmetic.</td>
           </tr>
           <tr>
-            <td><strong>Output format</strong></td>
-            <td>Text string ("Your tongue suggests Yang Deficiency because…") — must be parsed back into a structured result</td>
-            <td>Direct probability vector: <code>[0.04, 0.08, 0.31, ...]</code> — constitution is <code>argmax()</code> of 9 floats</td>
+            <td><strong>Output</strong></td>
+            <td>Text string parsed back into a result — error-prone, non-standard</td>
+            <td>Text response with structured extraction</td>
+            <td>Direct probability vector — constitution = <code>argmax(9 floats)</code></td>
           </tr>
           <tr>
             <td><strong>Latency</strong></td>
-            <td>3–15 seconds per scan (LLM generation speed)</td>
-            <td>&lt; 500 ms end-to-end including network round-trip</td>
+            <td>5–15 seconds (LLM generation)</td>
+            <td>3–10 seconds (VLM generation)</td>
+            <td>&lt; 500 ms end-to-end</td>
           </tr>
           <tr>
             <td><strong>Consistency</strong></td>
-            <td>Non-deterministic — LLM temperature means the same image can return different constitutions on repeated calls</td>
-            <td>100% deterministic — fixed weights, same image always returns identical probability scores</td>
+            <td>Non-deterministic — same image can return different constitution on repeated calls</td>
+            <td>Non-deterministic — temperature-based generation</td>
+            <td>100% deterministic — fixed weights, identical output every time</td>
           </tr>
           <tr>
             <td><strong>Cost per scan</strong></td>
-            <td>~$0.01–0.05 per scan in LLM API token fees</td>
-            <td>~$0.001 (compute only — no token cost)</td>
+            <td>~$0.03–0.10 (LLM vision API pricing)</td>
+            <td>Proprietary — not publicly available</td>
+            <td>~$0.001 (compute only)</td>
           </tr>
           <tr>
-            <td><strong>Accuracy</strong></td>
-            <td>TongueVLM (best published VLM): 78.6% on constitution — with 90,000 proprietary images</td>
-            <td>83.7% on constitution — with 6,719 CC0 images (PMC12160370)</td>
+            <td><strong>Published constitution accuracy</strong></td>
+            <td>No published benchmark — not designed for this task</td>
+            <td><strong>78.6%</strong> · verified in JMIR 2026</td>
+            <td><strong>83.7%</strong> · verified in PMC12160370</td>
+          </tr>
+          <tr>
+            <td><strong>Training data needed to reach that accuracy</strong></td>
+            <td>—</td>
+            <td>90,000 images (proprietary, not auditable)</td>
+            <td>6,719 images (CC0, fully auditable)</td>
           </tr>
           <tr>
             <td><strong>Explainability</strong></td>
-            <td>LLM-generated rationale — plausible-sounding but not traceable to measured values</td>
-            <td>Every result traces back to specific tongue index scores (body colour Lab values, coating coverage ratio, etc.)</td>
+            <td>LLM narration — plausible but not traceable</td>
+            <td>Language-model generated — not numerically traceable</td>
+            <td>Every result links to specific measured tongue index values</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="callout warning" style="margin-top:4px;">
+        <div class="callout-icon">📐</div>
+        <div class="callout-body">
+          <strong>On the 83.7% figure — what it is and what it isn't</strong>
+          <p>83.7% is the published test-set accuracy from PMC12160370 — a peer-reviewed, dual-centre prospective study that used the same architecture Aiteaic replicates (ResNet-50 + 11 traditional indices + MLP). It is not Aiteaic's own currently-measured result; it is the independently validated performance ceiling for this class of model, achieved with comparable training data. When Aiteaic's training run completes on the TCM-Tongue dataset, the result will be compared against this benchmark and published here. The 83.7% is the floor we expect to match — not a claim we have already proven.</p>
+        </div>
+      </div>
 
       <div class="callout info">
         <div class="callout-icon">⚡</div>
         <div class="callout-body">
           <strong>Why the classification step is so fast</strong>
-          <p>The constitution lookup is not a search or a generation — it is arithmetic. Once the ResNet-50 backbone has extracted the 37-dimensional feature vector (the slow step, ~100–300ms), the MLP classification is three matrix multiplications: 37×8, 8×8, and 8×9. On any modern CPU this completes in under 1 millisecond. The bottleneck is image transmission over the network, not the classification. This is why determinism and sub-second latency are architectural guarantees rather than engineering targets — they follow directly from using a fixed-weight classifier instead of a generative model.</p>
+          <p>The constitution lookup is not a search or a generation — it is arithmetic. Once the ResNet-50 backbone has extracted the 37-dimensional feature vector (the slow step, ~100–300ms), the MLP classification is three matrix multiplications: 37×8, 8×8, 8×9. On any modern CPU this completes in under 1 millisecond. The bottleneck is image transmission over the network, not the classification. TongueVLM — with 13× more training data — still can't beat this approach on accuracy, and takes 6–20× longer per scan. The advantage is architectural, not a matter of compute budget.</p>
         </div>
       </div>
     </section>
