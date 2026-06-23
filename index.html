@@ -527,10 +527,10 @@
 
 <!-- TOP NAV -->
 <nav class="topnav">
-  <div class="topnav-logo">AIT<span>E</span>AIC</div>
+  <div class="topnav-logo" style="font-weight:600;letter-spacing:0;">Aiteaic</div>
   <div class="topnav-sep">/</div>
   <div class="topnav-title">Scanner Documentation</div>
-  <div class="topnav-badge">v1.0 · Jun 2026</div>
+  <div class="topnav-badge">v2.1 · Jun 2026</div>
 </nav>
 
 
@@ -592,47 +592,13 @@
     <!-- INTRODUCTION -->
     <section class="section" id="introduction">
 
-      <div class="hero-rank">World #1 · Verified</div>
-      <h1 class="hero-headline">The most accurate AI tongue scanner in the world.</h1>
-      <p class="hero-sub">
-        <strong>83.7% accuracy</strong> — the highest published figure globally for AI-based TCM body constitution classification. No competing system has reported a higher number in peer-reviewed literature. Singapore-built. Scan to product recommendation in under 30 seconds.
+      <h1>Aiteaic Tongue Scanner — Technical Documentation</h1>
+      <p style="font-size:15px; line-height:1.75; color:var(--text-secondary); margin-bottom:12px;">
+        This document describes the architecture, training data, validation methodology, and API specification for the Aiteaic tongue-based TCM body constitution classifier. The system classifies a tongue image into one or more of the nine constitutional types defined under the Wang Qi national standard (ZYYXH/T157-2009), returning a probability distribution across all nine types, a primary constitution assignment, and a product recommendation — all within a single inference pass.
       </p>
-
-      <!-- User journey flow -->
-      <div class="hero-flow">
-        <div class="hero-flow-step">
-          <div class="hero-flow-icon">📸</div>
-          <div class="hero-flow-label">Scan Tongue</div>
-          <div class="hero-flow-time">~5 seconds</div>
-        </div>
-        <div class="hero-flow-step">
-          <div class="hero-flow-icon">🧠</div>
-          <div class="hero-flow-label">Constitution</div>
-          <div class="hero-flow-time">&lt; 500 ms</div>
-        </div>
-        <div class="hero-flow-step hl">
-          <div class="hero-flow-icon">🛍️</div>
-          <div class="hero-flow-label">Product Match</div>
-          <div class="hero-flow-time">Instant</div>
-        </div>
-        <div class="hero-flow-step">
-          <div class="hero-flow-icon">📄</div>
-          <div class="hero-flow-label">Wellness Report</div>
-          <div class="hero-flow-time">Instant</div>
-        </div>
-      </div>
-      <p class="hero-flow-caption">No questionnaire required &nbsp;·&nbsp; No staff needed &nbsp;·&nbsp; Resets automatically for the next user</p>
-
-      <!-- Trust bar -->
-      <div class="trust-bar">
-        <span class="trust-label">Validated by</span>
-        <span class="trust-item">Springer Nature · <em>Chinese Medicine</em> 2025</span>
-        <span class="trust-item">NIH PubMed</span>
-        <span class="trust-item">NTU Singapore</span>
-        <span class="trust-item">MOH-Aligned</span>
-        <span class="trust-item">Wang Qi ZYYXH/T157-2009</span>
-        <span class="trust-item">CC0 Open Dataset</span>
-      </div>
+      <p style="font-size:15px; line-height:1.75; color:var(--text-secondary); margin-bottom:24px;">
+        The classifier replicates the architecture reported in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a> (Springer Nature, <em>Chinese Medicine</em>, June 2025): ResNet-50 feature extraction combined with an 11-index MLP, validated at 83.7% on a 1,374-patient dual-centre clinical dataset. This is the highest accuracy reported in peer-reviewed literature for 9-class TCM body constitution classification from tongue imaging. The nearest published comparison — TongueVLM (<a href="https://pubmed.ncbi.nlm.nih.gov/40125627/" target="_blank">JMIR 2026</a>), trained on 90,000 images — achieved 78.6% on the same task.
+      </p>
 
       <!-- Live metrics ticker -->
       <div class="live-ticker" id="live-ticker">
@@ -675,14 +641,6 @@
           <div class="stat-number">21,948</div>
           <div class="stat-label">Clinical validation participants</div>
           <div class="stat-source">Wang Qi · 9 provinces · National Standard 2009</div>
-        </div>
-      </div>
-
-      <div class="callout success" style="border-left: 4px solid #16a34a; margin-bottom: 16px;">
-        <div class="callout-icon">🏆</div>
-        <div class="callout-body">
-          <strong>Highest published accuracy for AI tongue constitution classification — globally</strong>
-          <p>83.7% is the highest accuracy reported in peer-reviewed literature for classifying all 9 TCM body constitution types from tongue imaging. No published study — including purpose-built vision-language models trained on 13× more data — has reported a higher figure for this specific task. The closest competitor, <a href="https://pubmed.ncbi.nlm.nih.gov/40125627/" target="_blank">TongueVLM (JMIR 2026)</a>, used 90,000 proprietary images and achieved 78.6% — 5.1 percentage points lower than Aiteaic's architecture, using 13× more data. The full comparative study is at <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a>.</p>
         </div>
       </div>
 
@@ -864,48 +822,51 @@
       <h2>Processing Pipeline</h2>
       <p>The following steps occur between the moment a user photographs their tongue and the moment a constitution result is displayed.</p>
 
-      <div class="pipeline">
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">📸</div>
-          <div class="pipeline-step-label">Image Capture</div>
-          <div class="pipeline-step-sub">User photos tongue in-app</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">✂️</div>
-          <div class="pipeline-step-label">Segmentation</div>
-          <div class="pipeline-step-sub">Tongue isolated from background</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">🎨</div>
-          <div class="pipeline-step-label">Normalisation</div>
-          <div class="pipeline-step-sub">White balance, colour space</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">🧠</div>
-          <div class="pipeline-step-label">Classification</div>
-          <div class="pipeline-step-sub">MLP model, 9 outputs</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">📊</div>
-          <div class="pipeline-step-label">Result</div>
-          <div class="pipeline-step-sub">Constitution + confidence</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step" style="background:var(--green);color:#fff;">
-          <div class="pipeline-step-icon">🛍️</div>
-          <div class="pipeline-step-label" style="color:#fff;">Product Match</div>
-          <div class="pipeline-step-sub" style="color:rgba(255,255,255,0.8);">Instant lookup · no AI</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-step">
-          <div class="pipeline-step-icon">📄</div>
-          <div class="pipeline-step-label">Report</div>
-          <div class="pipeline-step-sub">Generated from scan</div>
-        </div>
+      <!-- Pipeline SVG diagram -->
+      <div style="overflow-x:auto; margin:24px 0;">
+        <svg viewBox="0 0 860 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:600px;font-family:inherit;">
+          <defs>
+            <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#64748B"/>
+            </marker>
+          </defs>
+          <!-- boxes -->
+          <rect x="0"   y="20" width="104" height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <rect x="128" y="20" width="104" height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <rect x="256" y="20" width="104" height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <rect x="384" y="20" width="116" height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <rect x="524" y="20" width="104" height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <rect x="652" y="20" width="104" height="70" rx="6" fill="#166534" stroke="#16a34a" stroke-width="1.5"/>
+          <rect x="780" y="20" width="80"  height="70" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <!-- arrows -->
+          <line x1="104" y1="55" x2="124" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="232" y1="55" x2="252" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="360" y1="55" x2="380" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="500" y1="55" x2="520" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="628" y1="55" x2="648" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <line x1="756" y1="55" x2="776" y2="55" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <!-- labels -->
+          <text x="52"  y="50" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Image</text>
+          <text x="52"  y="64" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Capture</text>
+          <text x="52"  y="80" text-anchor="middle" fill="#64748B" font-size="9.5">JPEG/PNG</text>
+          <text x="180" y="50" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Segmentation</text>
+          <text x="180" y="80" text-anchor="middle" fill="#64748B" font-size="9.5">U2Net-MT</text>
+          <text x="308" y="50" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Normalisation</text>
+          <text x="308" y="80" text-anchor="middle" fill="#64748B" font-size="9.5">Lab colour space</text>
+          <text x="442" y="44" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Feature Extract</text>
+          <text x="442" y="58" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">&amp; Classify</text>
+          <text x="442" y="80" text-anchor="middle" fill="#64748B" font-size="9.5">ResNet-50 + MLP</text>
+          <text x="576" y="50" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Constitution</text>
+          <text x="576" y="64" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Result</text>
+          <text x="576" y="80" text-anchor="middle" fill="#64748B" font-size="9.5">9-class softmax</text>
+          <text x="704" y="50" text-anchor="middle" fill="#dcfce7" font-size="11" font-weight="600">Product</text>
+          <text x="704" y="64" text-anchor="middle" fill="#dcfce7" font-size="11" font-weight="600">Match</text>
+          <text x="704" y="80" text-anchor="middle" fill="#86efac" font-size="9.5">Static lookup</text>
+          <text x="820" y="50" text-anchor="middle" fill="#E2E8F0" font-size="11" font-weight="600">Report</text>
+          <text x="820" y="80" text-anchor="middle" fill="#64748B" font-size="9.5">Firestore</text>
+          <!-- timing annotation -->
+          <text x="430" y="108" text-anchor="middle" fill="#475569" font-size="9">Total: &lt; 500 ms from image receipt to constitution result · Product match and report: instant</text>
+        </svg>
       </div>
 
       <h3>Step 1 — Image Capture</h3>
@@ -1101,6 +1062,92 @@
           <tr><td><strong>Published accuracy</strong></td><td>83.7% test set accuracy, AUC 0.898 (PMC12160370)</td></tr>
         </tbody>
       </table>
+
+      <!-- Architecture diagram -->
+      <div style="overflow-x:auto; margin:28px 0;">
+        <svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:560px;font-family:inherit;">
+          <!-- title -->
+          <text x="390" y="18" text-anchor="middle" fill="#94A3B8" font-size="10" letter-spacing="1">HYBRID MLP ARCHITECTURE · PMC12160370</text>
+
+          <!-- INPUT -->
+          <rect x="20" y="30" width="100" height="50" rx="5" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+          <text x="70" y="51" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">Tongue Image</text>
+          <text x="70" y="66" text-anchor="middle" fill="#64748B" font-size="9">224 × 224 px</text>
+
+          <!-- BRANCH split line -->
+          <line x1="120" y1="55" x2="155" y2="55" stroke="#475569" stroke-width="1.2"/>
+          <line x1="155" y1="55" x2="155" y2="110" stroke="#475569" stroke-width="1.2"/>
+          <line x1="155" y1="55"  x2="155" y2="30"  stroke="#475569" stroke-width="1.2"/>
+          <!-- upper branch arrow -->
+          <line x1="155" y1="30" x2="220" y2="30" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="218,26 226,30 218,34" fill="#475569"/>
+          <!-- lower branch arrow -->
+          <line x1="155" y1="110" x2="220" y2="110" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="218,106 226,110 218,114" fill="#475569"/>
+
+          <!-- BRANCH A: Traditional indices -->
+          <rect x="226" y="15" width="130" height="46" rx="5" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <text x="291" y="35" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">11 Tongue Indices</text>
+          <text x="291" y="50" text-anchor="middle" fill="#64748B" font-size="9">colour · coating · cracks</text>
+
+          <!-- BRANCH B: ResNet-50 -->
+          <rect x="226" y="88" width="130" height="46" rx="5" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <text x="291" y="108" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">ResNet-50</text>
+          <text x="291" y="123" text-anchor="middle" fill="#64748B" font-size="9">ImageNet pretrained</text>
+
+          <!-- branch output labels -->
+          <line x1="356" y1="38" x2="410" y2="38" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="408,34 416,38 408,42" fill="#475569"/>
+          <text x="383" y="32" text-anchor="middle" fill="#64748B" font-size="9">11-dim</text>
+
+          <line x1="356" y1="111" x2="410" y2="111" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="408,107 416,111 408,115" fill="#475569"/>
+          <text x="383" y="105" text-anchor="middle" fill="#64748B" font-size="9">26-dim</text>
+
+          <!-- CONCAT box -->
+          <rect x="416" y="60" width="90" height="40" rx="5" fill="#1E3A2F" stroke="#16a34a" stroke-width="1.2"/>
+          <text x="461" y="77" text-anchor="middle" fill="#86efac" font-size="10" font-weight="600">Concatenate</text>
+          <text x="461" y="92" text-anchor="middle" fill="#4ade80" font-size="9">37-dim vector</text>
+
+          <!-- merge lines to concat -->
+          <line x1="416" y1="80" x2="416" y2="38" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="416" y1="80" x2="416" y2="111" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- MLP layers -->
+          <line x1="506" y1="80" x2="536" y2="80" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="534,76 542,80 534,84" fill="#475569"/>
+
+          <rect x="542" y="60" width="64" height="40" rx="5" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <text x="574" y="77" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">MLP</text>
+          <text x="574" y="92" text-anchor="middle" fill="#64748B" font-size="9">8 nodes · ReLU</text>
+
+          <line x1="606" y1="80" x2="630" y2="80" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="628,76 636,80 628,84" fill="#475569"/>
+
+          <rect x="636" y="60" width="64" height="40" rx="5" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <text x="668" y="77" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">MLP</text>
+          <text x="668" y="92" text-anchor="middle" fill="#64748B" font-size="9">8 nodes · ReLU</text>
+
+          <line x1="700" y1="80" x2="724" y2="80" stroke="#475569" stroke-width="1.2"/>
+          <polygon points="722,76 730,80 722,84" fill="#475569"/>
+
+          <!-- OUTPUT -->
+          <rect x="730" y="55" width="44" height="50" rx="5" fill="#312E81" stroke="#6366f1" stroke-width="1.2"/>
+          <text x="752" y="76" text-anchor="middle" fill="#c7d2fe" font-size="9" font-weight="600">Softmax</text>
+          <text x="752" y="90" text-anchor="middle" fill="#c7d2fe" font-size="9">9-class</text>
+
+          <!-- OUTPUT labels below -->
+          <text x="390" y="175" text-anchor="middle" fill="#475569" font-size="9">Branch A: computed tongue attributes (Lab colour, coating ratio, moisture, cracks, petechia, teeth marks)</text>
+          <text x="390" y="190" text-anchor="middle" fill="#475569" font-size="9">Branch B: deep learned features via residual convolutional network (ResNet-50)</text>
+          <text x="390" y="205" text-anchor="middle" fill="#475569" font-size="9">Fusion: both branches concatenated into a single 37-dimensional input vector for classification</text>
+
+          <!-- accuracy badge -->
+          <rect x="270" y="225" width="240" height="52" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+          <text x="390" y="247" text-anchor="middle" fill="#94A3B8" font-size="9" letter-spacing="0.5">PUBLISHED VALIDATION · PMC12160370</text>
+          <text x="390" y="265" text-anchor="middle" fill="#E2E8F0" font-size="13" font-weight="700">83.7% accuracy · AUC 0.898</text>
+          <text x="390" y="280" text-anchor="middle" fill="#64748B" font-size="9">1,374 patients · dual-centre · Springer Nature Chinese Medicine 2025</text>
+        </svg>
+      </div>
 
       <h3>Why a Trained Model, Not a Language Model</h3>
       <p>Most competing consumer tongue apps route your image through a general-purpose vision LLM (GPT-4V, Gemini Vision, or similar) with a prompt like "classify this tongue into a TCM constitution type." This approach has three compounding problems: it is slow, non-deterministic, and structurally wrong for the task.</p>
@@ -1505,6 +1552,61 @@ if transformedScore &lt; 30  →  constitution is ABSENT
 if balanced.transformedScore ≥ 60 AND all others &lt; 30  →  PURE BALANCED
 if balanced.transformedScore ≥ 60 AND any other ≥ 30   →  BASICALLY BALANCED
 if any unbalanced ≥ 30                                  →  UNBALANCED (multiple allowed)</pre>
+        <!-- CCMQ scoring diagram -->
+        <div style="overflow-x:auto; margin:20px 0;">
+          <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:500px;font-family:inherit;">
+            <text x="350" y="16" text-anchor="middle" fill="#94A3B8" font-size="9.5" letter-spacing="1">CCMQ SCORING FLOW · WANG QI ZYYXH/T157-2009</text>
+            <!-- 3 question boxes -->
+            <rect x="10"  y="28" width="80" height="36" rx="4" fill="#1E293B" stroke="#334155"/>
+            <rect x="100" y="28" width="80" height="36" rx="4" fill="#1E293B" stroke="#334155"/>
+            <rect x="190" y="28" width="80" height="36" rx="4" fill="#1E293B" stroke="#334155"/>
+            <text x="50"  y="43" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">Q1</text>
+            <text x="140" y="43" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">Q2</text>
+            <text x="230" y="43" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">Q3</text>
+            <text x="50"  y="56" text-anchor="middle" fill="#64748B" font-size="9">1–5 Likert</text>
+            <text x="140" y="56" text-anchor="middle" fill="#64748B" font-size="9">1–5 Likert</text>
+            <text x="230" y="56" text-anchor="middle" fill="#64748B" font-size="9">1–5 Likert</text>
+            <!-- sum arrow -->
+            <line x1="270" y1="46" x2="296" y2="46" stroke="#475569" stroke-width="1.2"/>
+            <polygon points="294,42 302,46 294,50" fill="#475569"/>
+            <!-- rawScore box -->
+            <rect x="302" y="28" width="100" height="36" rx="4" fill="#1E293B" stroke="#334155"/>
+            <text x="352" y="43" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">rawScore</text>
+            <text x="352" y="56" text-anchor="middle" fill="#64748B" font-size="9">range 3–15</text>
+            <!-- formula arrow -->
+            <line x1="402" y1="46" x2="426" y2="46" stroke="#475569" stroke-width="1.2"/>
+            <polygon points="424,42 432,46 424,50" fill="#475569"/>
+            <!-- formula box -->
+            <rect x="432" y="20" width="200" height="52" rx="4" fill="#1E293B" stroke="#6366f1" stroke-width="1.2"/>
+            <text x="532" y="39" text-anchor="middle" fill="#c7d2fe" font-size="10" font-weight="600">transformedScore</text>
+            <text x="532" y="55" text-anchor="middle" fill="#94A3B8" font-size="9.5">= ((rawScore − 3) / 12) × 100</text>
+            <text x="532" y="67" text-anchor="middle" fill="#64748B" font-size="9">range 0–100</text>
+
+            <!-- threshold decision -->
+            <line x1="532" y1="72" x2="532" y2="92" stroke="#475569" stroke-width="1.2"/>
+            <polygon points="528,90 532,98 536,90" fill="#475569"/>
+            <rect x="432" y="98" width="200" height="36" rx="4" fill="#1E293B" stroke="#334155"/>
+            <text x="532" y="114" text-anchor="middle" fill="#CBD5E1" font-size="10" font-weight="600">Threshold ≥ 30?</text>
+            <text x="532" y="127" text-anchor="middle" fill="#64748B" font-size="9">per constitution subscale</text>
+
+            <!-- yes branch -->
+            <line x1="432" y1="116" x2="390" y2="116" stroke="#475569" stroke-width="1.2"/>
+            <polygon points="392,112 384,116 392,120" fill="#475569"/>
+            <rect x="296" y="100" width="88" height="32" rx="4" fill="#166534" stroke="#16a34a" stroke-width="1.2"/>
+            <text x="340" y="113" text-anchor="middle" fill="#dcfce7" font-size="10" font-weight="600">PRESENT</text>
+            <text x="390" y="112" text-anchor="middle" fill="#4ade80" font-size="9">YES</text>
+
+            <!-- no branch -->
+            <line x1="632" y1="116" x2="654" y2="116" stroke="#475569" stroke-width="1.2"/>
+            <polygon points="652,112 660,116 652,120" fill="#475569"/>
+            <rect x="660" y="100" width="36" height="32" rx="4" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+            <text x="678" y="113" text-anchor="middle" fill="#64748B" font-size="10">AB-</text>
+            <text x="678" y="124" text-anchor="middle" fill="#64748B" font-size="9">SENT</text>
+            <text x="648" y="112" text-anchor="middle" fill="#64748B" font-size="9">NO</text>
+
+            <text x="350" y="170" text-anchor="middle" fill="#475569" font-size="9">Repeated for all 9 constitution subscales. Balanced constitution uses ≥ 60 threshold with special override rule.</text>
+          </svg>
+        </div>
         <p>Source: Wang Qi et al., validated CCMQ scoring standard. Endorsed by China Association of Chinese Medicine 2009. Validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a> and short-form in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10617149/" target="_blank">PMC10617149</a>.</p>
       </div>
 
@@ -1868,92 +1970,40 @@ Content-Type: application/json
     <!-- B2B DEPLOYMENT -->
     <section class="section" id="b2b">
       <h2>B2B Deployment Guide</h2>
-      <p>Aiteaic is designed to operate as a self-contained kiosk experience — no staff required, no account setup for the end user, no technical expertise at the point of deployment. A business partner can place an iPad at any high-traffic wellness touchpoint and have a fully functional tongue scanner running within minutes of setup.</p>
+      <p>Aiteaic runs entirely in a web browser — no app installation required. Any tablet or device with a camera and internet access can run a deployment. The simplest setup is an iPad on a stand, open to the web app in fullscreen mode.</p>
 
-      <div class="callout info">
-        <div class="callout-icon">🏨</div>
-        <div class="callout-body">
-          <strong>Pilot deployment scenario: hotel spa, wellness centre, TCM clinic, corporate event</strong>
-          <p>A guest approaches the iPad, taps Start, scans their tongue in under 30 seconds, and receives their constitution type and a personalised product recommendation on screen. They can scan a QR code to continue the experience on their own phone, purchase the recommended product, or complete the deeper questionnaire at their convenience. No staff involvement required. The iPad resets automatically for the next guest.</p>
-        </div>
-      </div>
-
-      <h3>Hardware — What to Order</h3>
-      <p>All prices are indicative SGD retail. Apple Singapore: <a href="https://www.apple.com/sg/shop" target="_blank">apple.com/sg/shop</a>.</p>
-
+      <h3>Device Requirements</h3>
       <table>
-        <thead><tr><th>Item</th><th>Recommended Model</th><th>Est. SGD</th><th>Notes</th></tr></thead>
+        <thead><tr><th>Requirement</th><th>Detail</th></tr></thead>
         <tbody>
-          <tr>
-            <td><strong>iPad</strong></td>
-            <td>iPad (10th gen, A14 Bionic) — 64 GB WiFi</td>
-            <td>~$699</td>
-            <td>12 MP rear camera, sufficient for tongue scanning. For higher-traffic venues, iPad Air M2 (~$899) is more durable under sustained use.</td>
-          </tr>
-          <tr>
-            <td><strong>iPad (cellular option)</strong></td>
-            <td>Add WiFi + Cellular model</td>
-            <td>+$150</td>
-            <td>Recommended for venues with unreliable WiFi. Requires a local SIM with data plan (~$10–15/month).</td>
-          </tr>
-          <tr>
-            <td><strong>Stand — desktop</strong></td>
-            <td>Lamicall / Viozon adjustable tablet stand</td>
-            <td>~$30–50</td>
-            <td>For countertop placement. Adjust angle to ~75° upright for tongue scanning. Available on Shopee/Lazada.</td>
-          </tr>
-          <tr>
-            <td><strong>Stand — floor kiosk</strong></td>
-            <td>CTA Digital VESA floor stand, or Heckler Design WindFall Prime</td>
-            <td>~$150–400</td>
-            <td>Heckler is commercial-grade and tamper-resistant — recommended for hotel lobbies and high-traffic public areas. CTA Digital is adequate for supervised events.</td>
-          </tr>
-          <tr>
-            <td><strong>Lighting</strong></td>
-            <td>Clip-on ring light (USB-powered, 6" diameter)</td>
-            <td>~$20–35</td>
-            <td>Only needed in dim indoor environments. Position at eye level, 30–40 cm from face. Natural daylight or consistent warm LED overhead is sufficient in most venues.</td>
-          </tr>
-          <tr>
-            <td><strong>Screen protector</strong></td>
-            <td>Anti-fingerprint matte protector (iPad 10th gen)</td>
-            <td>~$15–25</td>
-            <td>Matte finish reduces glare in bright environments. Replace when worn.</td>
-          </tr>
-          <tr>
-            <td><strong>Hygiene</strong></td>
-            <td>Alcohol-safe microfibre cloths + sign prompting users to wipe screen</td>
-            <td>~$10</td>
-            <td>For public-facing kiosks. Screen wipe before each use is good practice.</td>
-          </tr>
-          <tr>
-            <td><strong>Power</strong></td>
-            <td>Standard Apple USB-C charger + 2 m cable</td>
-            <td>Included / ~$20</td>
-            <td>Keep iPad plugged in during deployment. Do not use on battery for multi-hour activations.</td>
-          </tr>
+          <tr><td><strong>Device</strong></td><td>Any tablet — iPad (recommended) or Android tablet. Also works on desktop with a webcam.</td></tr>
+          <tr><td><strong>Browser</strong></td><td>Any modern browser — Safari, Chrome, Firefox. No app install needed.</td></tr>
+          <tr><td><strong>Camera</strong></td><td>Required. Device must have a front or rear camera accessible by the browser.</td></tr>
+          <tr><td><strong>Connectivity</strong></td><td>WiFi or mobile data. Inference runs on cloud — stable connection required.</td></tr>
         </tbody>
       </table>
 
-      <div class="callout info" style="margin-top:4px;">
-        <div class="callout-icon">🛒</div>
-        <div class="callout-body">
-          <strong>Minimum pilot setup — estimated SGD 750–800</strong>
-          <p>iPad 10th gen WiFi ($699) + desktop stand ($40) + screen protector ($20) + ring light if needed ($25) + USB-C cable ($15). Cellular model (+$150) recommended where WiFi is shared or unreliable. Floor kiosk stand (+$150–400) for lobby or event deployments.</p>
-        </div>
-      </div>
-
-      <h3>iPad Configuration — Step by Step</h3>
+      <h3>Recommended Kiosk Hardware</h3>
       <table>
-        <thead><tr><th>Step</th><th>Action</th><th>Where</th></tr></thead>
+        <thead><tr><th>Item</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>Create a dedicated Apple ID for the kiosk device — e.g. kiosk@atlasmedia.sg. Do not use a personal Apple ID.</td><td>appleid.apple.com</td></tr>
-          <tr><td>2</td><td>Install the Aiteaic app on the iPad using the kiosk Apple ID.</td><td>App Store (or TestFlight for pilot build)</td></tr>
-          <tr><td>3</td><td>Enable Guided Access: Settings → Accessibility → Guided Access → toggle On. Set a passcode.</td><td>iPad Settings</td></tr>
-          <tr><td>4</td><td>Open the Aiteaic app. Triple-click the side button to activate Guided Access. Tap Start.</td><td>iPad</td></tr>
-          <tr><td>5</td><td>The iPad is now locked to the Aiteaic app. Users cannot exit, open other apps, or access device settings. To exit: triple-click side button and enter Guided Access passcode.</td><td>iPad</td></tr>
-          <tr><td>6</td><td>Set auto-brightness to medium and keep the screen always-on: Settings → Display & Brightness → Auto-Lock → Never (do this before starting Guided Access).</td><td>iPad Settings</td></tr>
-          <tr><td>7</td><td>Position the iPad at chest height on the stand. Angle the camera facing the user at a comfortable tongue extension angle. Test with a team member before opening to guests.</td><td>Physical setup</td></tr>
+          <tr><td><strong>iPad (10th gen or newer)</strong></td><td>12 MP camera, reliable Safari support. Any WiFi model is sufficient for most venues.</td></tr>
+          <tr><td><strong>Tablet stand</strong></td><td>Desktop stand for countertop; floor kiosk stand for lobby or event deployments.</td></tr>
+          <tr><td><strong>Ring light (optional)</strong></td><td>Only needed in dim indoor environments. Natural or overhead LED light is usually sufficient.</td></tr>
+          <tr><td><strong>Power cable</strong></td><td>Keep device plugged in during deployment.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Setup — iPad Kiosk Mode</h3>
+      <table>
+        <thead><tr><th>Step</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Open Safari on the iPad and navigate to <strong>app.aiteaic.com</strong>.</td></tr>
+          <tr><td>2</td><td>Tap Share → Add to Home Screen to create a fullscreen shortcut.</td></tr>
+          <tr><td>3</td><td>Enable Guided Access: Settings → Accessibility → Guided Access → On. Set a passcode.</td></tr>
+          <tr><td>4</td><td>Open the Aiteaic home screen shortcut. Triple-click the side button → Start Guided Access. The device is now locked to Aiteaic only.</td></tr>
+          <tr><td>5</td><td>Set Auto-Lock to Never: Settings → Display & Brightness → Auto-Lock → Never (configure before enabling Guided Access).</td></tr>
+          <tr><td>6</td><td>Position at chest height, camera facing the user. Test before opening to guests.</td></tr>
         </tbody>
       </table>
 
