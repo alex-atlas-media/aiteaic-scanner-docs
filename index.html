@@ -455,7 +455,7 @@
       margin: 20px 0;
       line-height: 1.6;
     }
-    pre code { background: none; color: inherit; padding: 0; }
+    pre code { background: none !important; color: #E2E8F0 !important; padding: 0; }
 
     /* ── CONSTITUTION CARD ── */
     .constitution-grid {
@@ -698,7 +698,7 @@
         <div class="callout-icon">📋</div>
         <div class="callout-body">
           <strong>Who this document is for</strong>
-          <p>Clinical partners, investors, and healthcare stakeholders seeking to understand the methodology, data sources, and scientific foundation behind the Aiteaic scanner.</p>
+          <p>Clinical partners, wellness brands, and healthcare practitioners seeking to understand the methodology, data sources, and scientific foundation behind the Aiteaic scanner.</p>
         </div>
       </div>
     </section>
@@ -933,7 +933,7 @@
       <h3>Step 6 — Report Generation</h3>
       <p>A structured wellness report is compiled immediately from the scan output — tongue indices, constitution probabilities, primary and secondary constitutions, confidence rating, and product recommendation. The report does not wait for the questionnaire. If a user chooses to personalise their results afterwards (see Questionnaire Layer), the refined recommendation is appended to the existing report. The scan report and any questionnaire data are stored as independent documents in Firestore, linked by session ID.</p>
 
-      <pre><code>{
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;"><code>{
   "primary_constitution": "phlegm_dampness",
   "confidence_scores": {
     "balanced": 0.04,
@@ -1399,7 +1399,7 @@ const refinedRecommendation = REFINED_TABLE[primaryConstitution][questionnairePr
     <!-- HEURISTIC & SCORING -->
     <section class="section" id="heuristic">
       <h2>Heuristic &amp; Scoring Logic</h2>
-      <p>This section documents the complete scoring logic used by Aiteaic to classify a tongue image and a questionnaire response into one of the 9 constitution types. It is published here to be transparent — so that Jovalene, investors, and clinical partners can inspect exactly how the result is calculated, and so that any code change that affects this logic must be reflected here.</p>
+      <p>This section documents the complete scoring logic used by Aiteaic to classify a tongue image and a questionnaire response into one of the 9 constitution types. It is published here to be transparent — so that clinical partners and practitioners can inspect exactly how the result is calculated, and so that any code change that affects this logic must be reflected here.</p>
 
       <div class="callout warning">
         <div class="callout-icon">🔁</div>
@@ -1668,7 +1668,7 @@ Content-Type: application/json
         <li><strong>Larger proprietary training data</strong> — clinical systems have collected tongue images at hospital scale, typically 10x–100x the size of public research datasets</li>
         <li><strong>Multi-physician label consensus</strong> — labels validated by multiple practitioners, reducing individual bias</li>
         <li><strong>Richer feature output</strong> — clinical systems often return quantitative tongue indices (colour score, greasy index, etc.) that add a second data layer to the constitution result</li>
-        <li><strong>Clinical credibility signal</strong> — naming a recognized clinical AI partner in PR and investor materials carries additional credibility beyond academic citations</li>
+        <li><strong>Clinical credibility signal</strong> — a recognized clinical AI partnership adds independent scientific validation beyond academic citations alone</li>
       </ul>
 
       <h3>The Combined Value Proposition</h3>
