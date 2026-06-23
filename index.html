@@ -497,7 +497,7 @@
           <div class="ticker-status">PMC12160370 · Springer Nature 2025</div>
         </div>
         <div class="ticker-item">
-          <div class="ticker-number"><span id="t-images">29,149</span><span class="ticker-unit">+</span></div>
+          <div class="ticker-number"><span id="t-images">24,094</span><span class="ticker-unit">+</span></div>
           <div class="ticker-label">Research foundation images</div>
           <div class="ticker-status">Across 3 published studies</div>
         </div>
@@ -1048,7 +1048,7 @@
 
       <h3>Step 3 — MLP Classification</h3>
       <p>Both feature sets (11 traditional + 26 deep = 37 total) are concatenated and fed into a Multilayer Perceptron (MLP) with two hidden layers. The output is a <strong>9-class probability distribution</strong> — one confidence score per constitution type, summing to 1.0.</p>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">Input:  [11 traditional features] + [26 deep features]  →  37-dimensional vector
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">Input:  [11 traditional features] + [26 deep features]  →  37-dimensional vector
 Hidden: Layer 1 (8 nodes, ReLU) → Layer 2 (8 nodes, ReLU)
 Output: Softmax(9 nodes)  →  probability score per constitution
 
@@ -1086,7 +1086,7 @@ Example output:
 
       <h3>Step 5 — CCMQ Questionnaire Scoring</h3>
       <p>After the tongue scan, users complete a 27-question validated questionnaire (SF-WQ9CCMQ-A). Each question uses a 5-point Likert scale (1 = never → 5 = always). The scoring formula is the published Wang Qi CCMQ formula:</p>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Per constitution subscale (3 questions in the 27-item short form):
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Per constitution subscale (3 questions in the 27-item short form):
 rawScore = sum of answers for that subscale          // range: 3–15
 transformedScore = ((rawScore - items) / (items × 4)) × 100
                  = ((rawScore - 3) / 12) × 100       // range: 0–100
@@ -1122,7 +1122,7 @@ if any unbalanced ≥ 30                                  →  UNBALANCED (multi
       <p>The scan endpoint accepts a tongue image and returns a structured JSON response. This is the interface between the mobile camera capture and the classification engine.</p>
 
       <h3>POST /api/scan</h3>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
 POST /api/scan
 Content-Type: multipart/form-data
 
@@ -1132,7 +1132,7 @@ Content-Type: multipart/form-data
   "sessionId": "string"     // client-generated UUID for this scan session
 }</pre>
 
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Response — success
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Response — success
 {
   "status": "ok",
   "scanId": "string",                      // Firestore document ID
@@ -1175,7 +1175,7 @@ Content-Type: multipart/form-data
 }</pre>
 
       <h3>POST /api/questionnaire</h3>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
 POST /api/questionnaire
 Content-Type: application/json
 
@@ -1486,7 +1486,7 @@ Content-Type: application/json
       </table>
 
       <h3>Running the Tests</h3>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;"># Install dependencies
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;"># Install dependencies
 pip install requests pillow numpy torch torchvision
 
 # Run all tests against the live API (recommended for production verification)
@@ -1530,7 +1530,7 @@ python test_suite.py \
 
       <h3>Test Image Label Map</h3>
       <p>The 553 test images have been labeled with their primary TCM constitution based on the tongue feature annotation in the dataset. The label map is available for independent verification of accuracy claims. Format:</p>
-      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">{
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">{
   "tongue_001.jpg": "phlegm_dampness",
   "tongue_002.jpg": "yin_deficiency",
   "tongue_003.jpg": "balanced",
@@ -1719,7 +1719,7 @@ python test_suite.py \
 
   // Animate static counters on page load
   window.addEventListener('load', () => {
-    animateCount(document.getElementById('t-images'),    29149, 1800, n => n.toLocaleString());
+    animateCount(document.getElementById('t-images'),    24094, 1800, n => n.toLocaleString());
     animateCount(document.getElementById('t-citations'), 32,    1200);
     // Accuracy stays fixed — animating a percentage misleads
   });
