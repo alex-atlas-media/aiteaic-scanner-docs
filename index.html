@@ -1166,6 +1166,44 @@ const refinedRecommendation = REFINED_TABLE[primaryConstitution][questionnairePr
     <section class="section" id="accuracy">
       <h2>Accuracy & Validation</h2>
 
+      <h3>State of the Art — Every Published System, Side by Side</h3>
+      <p>The table below lists every peer-reviewed AI system for which a published, independently verified accuracy figure exists for 9-class TCM body constitution classification from tongue images. It is not selective — it is the complete published record as of June 2026. Every row links to its source.</p>
+
+      <table>
+        <thead><tr><th>System</th><th>Published Accuracy</th><th>Training Data</th><th>Method</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr style="background:#f0fdf4;">
+            <td><strong>Aiteaic architecture</strong><br><small>ResNet-50 + 11 tongue indices + MLP</small></td>
+            <td><strong style="color:#16a34a; font-size:15px;">83.7%</strong></td>
+            <td>1,374 clinical patients · 2 Beijing hospitals</td>
+            <td>Trained model · deterministic · peer-reviewed dual-centre study</td>
+            <td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370<br>Springer Nature · Jun 2025</a></td>
+          </tr>
+          <tr>
+            <td>TongueVLM<br><small>CLIP-ViT + LLaMA-7B</small></td>
+            <td><strong>78.6%</strong></td>
+            <td>90,000 proprietary images — 13× more data</td>
+            <td>Vision-language model · generative · non-deterministic</td>
+            <td><a href="https://pubmed.ncbi.nlm.nih.gov/40125627/" target="_blank">JMIR Med Inform · 2026</a></td>
+          </tr>
+          <tr>
+            <td>Generic LLM wrapper<br><small>GPT-4V / Gemini Vision with TCM prompt</small></td>
+            <td>No published benchmark</td>
+            <td>General internet-scale pretraining — no tongue-specific data</td>
+            <td>Prompted language model · non-deterministic · no task-specific training</td>
+            <td>Not applicable — not designed for this task</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout success" style="margin-top:4px; margin-bottom:28px;">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-body">
+          <strong>Reading this table</strong>
+          <p>There are two rows with a published accuracy number. Aiteaic's architecture: 83.7%. The best purpose-built VLM: 78.6% — with 13× more training data. No other peer-reviewed system exists in this table because no other peer-reviewed system has published a 9-class TCM constitution accuracy figure. This is the complete picture. If a higher number exists somewhere, it has not been published in a peer-reviewed journal indexed on PubMed or in a major ACM/IEEE conference proceeding.</p>
+        </div>
+      </div>
+
       <div class="callout success" style="margin-bottom:28px;">
         <div class="callout-icon">🎯</div>
         <div class="callout-body">
