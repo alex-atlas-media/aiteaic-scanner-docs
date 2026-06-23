@@ -306,6 +306,33 @@
       flex-shrink: 0;
     }
 
+    /* ── TABS ── */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--border);
+      margin: 24px 0 0 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+      transition: color 0.15s;
+      font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-panel { display: none; padding-top: 24px; }
+    .tab-panel.active { display: block; }
+
     /* ── TABLE ── */
     table {
       width: 100%;
@@ -554,6 +581,7 @@
         <div class="callout-body">
           <strong>This is the critical difference from consumer apps</strong>
           <p>Free online tongue tools (such as MyZenCheck, QiScan, and others) typically use general-purpose vision AI prompted to guess a constitution type. They are not trained on practitioner-labeled tongue images. Aiteaic's model was built specifically for this task, on a peer-reviewed labeled dataset, verified by licensed TCM practitioners.</p>
+          <p style="margin-top:10px;">They also have a structural speed problem. When a competitor sends your tongue image to GPT-4V or a similar model, that model must read a prompt, process the image as tokens, generate a text reply describing the constitution, and then that text must be parsed back into a result. Every scan is a full language model generation cycle — inherently sequential, non-deterministic, and slow (typically 3–15 seconds per scan). Aiteaic's classification is the opposite: one fixed forward pass through a trained neural network. The constitution result falls out of a matrix multiply in milliseconds. There is no prompt, no generation, nothing to parse.</p>
         </div>
       </div>
     </section>
@@ -582,8 +610,8 @@
     <!-- THE 9 CONSTITUTIONS -->
     <section class="section" id="nine-constitutions">
       <h2>The 9 Constitutions Framework</h2>
-      <p>The nine-constitution model was developed by <strong>Professor Wang Qi</strong>, Academician of the Chinese Academy of Engineering and Professor at Beijing University of Chinese Medicine. It was validated across <strong>21,948 participants across 9 Chinese provinces</strong> and adopted as <strong>China's national TCM standard in 2009</strong> (standard reference: ZYYXH/T157-2009), endorsed by the China Association of Chinese Medicine.</p>
-      <p>This is not an experimental or proprietary framework. It is the basis for clinical TCM constitutional assessment internationally, with independent validation studies published in peer-reviewed journals indexed on PubMed — the US National Institutes of Health's medical research database.</p>
+      <p>The nine-constitution model was developed by <strong>Professor Wang Qi</strong>, Academician of the Chinese Academy of Engineering and Professor at Beijing University of Chinese Medicine. It was validated across <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank"><strong>21,948 participants across 9 Chinese provinces</strong></a> and adopted as <strong>China's national TCM standard in 2009</strong> (standard reference: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">ZYYXH/T157-2009</a>), endorsed by the China Association of Chinese Medicine.</p>
+      <p>This is not an experimental or proprietary framework. It is the basis for clinical TCM constitutional assessment internationally, with independent validation studies published in peer-reviewed journals indexed on PubMed — the US National Institutes of Health's medical research database. Key validation studies: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a>, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5471571/" target="_blank">PMC5471571</a>.</p>
 
       <div class="constitution-grid">
         <div class="constitution-card">
@@ -640,7 +668,7 @@
     <section class="section" id="tongue-markers">
       <h2>Why the Tongue Is Used as a Diagnostic Marker</h2>
       <p>Tongue diagnosis (舌诊, shé zhěn) is one of the oldest and most systematically studied diagnostic methods in TCM. The tongue's visible characteristics — colour, shape, coating, and moisture — reflect physiological states in internal organs and body systems according to TCM theory.</p>
-      <p>Modern research has validated several of these correlations objectively. The tongue's vascular supply, mucosal cell turnover rate, and coating microbial composition are all influenced by systemic metabolic and physiological states — providing a biological basis for why the tongue changes with constitution.</p>
+      <p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">Modern research has validated</a> several of these correlations objectively. The tongue's vascular supply, mucosal cell turnover rate, and coating microbial composition are all influenced by systemic metabolic and physiological states — providing a biological basis for why the tongue changes with constitution.</p>
 
       <h3>The Five Measured Dimensions</h3>
       <table>
@@ -661,13 +689,13 @@
         </tbody>
       </table>
 
-      <p>The AI model extracts numerical indices for each dimension from the tongue image, then combines them using a trained multilayer perceptron (MLP) to produce a probability score for each of the nine constitution types.</p>
+      <p>The AI model extracts numerical indices for each dimension from the tongue image, then combines them using a trained multilayer perceptron (MLP) to produce a probability score for each of the nine constitution types. (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370 — architectural source</a>)</p>
     </section>
 
     <!-- SINGAPORE CALIBRATION -->
     <section class="section" id="singapore-calibration">
       <h2>Singapore Calibration</h2>
-      <p>Published research explicitly confirms that <strong>TCM constitution distribution and tongue presentation in tropical climates differ significantly from Chinese demographic baselines</strong>. A model trained entirely on Chinese clinical data will be systematically miscalibrated for Singapore's population.</p>
+      <p>Published research explicitly confirms that <strong>TCM constitution distribution and tongue presentation in tropical climates differ significantly from Chinese demographic baselines</strong>. Source: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11429662/" target="_blank">PMC11429662 — JMIR 2024, Singapore-specific study</a>. A model trained entirely on Chinese clinical data will be systematically miscalibrated for Singapore's population.</p>
 
       <h3>Why Singapore Is Different</h3>
       <table>
@@ -687,7 +715,7 @@
       <p>Singapore's year-round humidity elevates ambient moisture levels, directly affecting tongue moisture readings (津液). The heavy reliance on air-conditioning creates a paradoxical chronic Yang-deficiency exposure that is not present in China's training data. Hawker food culture systematically promotes Phlegm-Dampness and Dampness-Heat patterns at rates higher than Mainland China.</p>
 
       <h3>Singapore Constitution Distribution</h3>
-      <p>Research from Nanyang Technological University (NTU) on Singapore's population confirms that <strong>Phlegm-Dampness, Qi Deficiency, Yang Deficiency, and Yin Deficiency are the dominant unbalanced constitution types in Singapore</strong> — consistent with the tropical lifestyle factors above. This distribution differs meaningfully from Mainland China's national prevalence data.</p>
+      <p>Research from <a href="https://dr.ntu.edu.sg/entities/publication/bada7576-ce45-438b-9618-0dbb478feda0" target="_blank">Nanyang Technological University (NTU)</a> on Singapore's population confirms that <strong>Phlegm-Dampness, Qi Deficiency, Yang Deficiency, and Yin Deficiency are the dominant unbalanced constitution types in Singapore</strong> — consistent with the tropical lifestyle factors above. This distribution differs meaningfully from Mainland China's national prevalence data. (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11429662/" target="_blank">PMC11429662</a>)</p>
 
       <div class="callout info">
         <div class="callout-icon">🇸🇬</div>
@@ -925,7 +953,61 @@
       </table>
 
       <h3>Why a Trained Model, Not a Language Model</h3>
-      <p>A trained classification model with fixed weights is <strong>deterministic</strong> — the same image always produces the same result. Language models are probabilistic by nature and cannot guarantee consistent output. Inconsistency in health guidance is not acceptable. TongueVLM (the most recent VLM approach, JMIR 2026) achieves only 78.6% constitution accuracy even with 90,000 training images — below the 83.7% we achieve with ResNet-50 hybrid on 6,719 images. Determinism and accuracy both favour the hybrid MLP architecture.</p>
+      <p>Most competing consumer tongue apps route your image through a general-purpose vision LLM (GPT-4V, Gemini Vision, or similar) with a prompt like "classify this tongue into a TCM constitution type." This approach has three compounding problems: it is slow, non-deterministic, and structurally wrong for the task.</p>
+
+      <table>
+        <thead><tr><th>Step</th><th>LLM wrapper approach</th><th>Aiteaic (ResNet-50 + MLP)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Image processing</strong></td>
+            <td>Image tokenised and embedded into prompt (~1,000–4,000 tokens depending on resolution)</td>
+            <td>Passed through convolutional layers — 11 traditional indices computed, 26 deep features extracted</td>
+          </tr>
+          <tr>
+            <td><strong>Classification step</strong></td>
+            <td>LLM generates a text explanation of the constitution — word by word, autoregressively. The model is "reasoning" out loud.</td>
+            <td>37-dimensional feature vector multiplied through two 8-node hidden layers → 9 softmax outputs. Pure matrix arithmetic.</td>
+          </tr>
+          <tr>
+            <td><strong>Output format</strong></td>
+            <td>Text string ("Your tongue suggests Yang Deficiency because…") — must be parsed back into a structured result</td>
+            <td>Direct probability vector: <code>[0.04, 0.08, 0.31, ...]</code> — constitution is <code>argmax()</code> of 9 floats</td>
+          </tr>
+          <tr>
+            <td><strong>Latency</strong></td>
+            <td>3–15 seconds per scan (LLM generation speed)</td>
+            <td>&lt; 500 ms end-to-end including network round-trip</td>
+          </tr>
+          <tr>
+            <td><strong>Consistency</strong></td>
+            <td>Non-deterministic — LLM temperature means the same image can return different constitutions on repeated calls</td>
+            <td>100% deterministic — fixed weights, same image always returns identical probability scores</td>
+          </tr>
+          <tr>
+            <td><strong>Cost per scan</strong></td>
+            <td>~$0.01–0.05 per scan in LLM API token fees</td>
+            <td>~$0.001 (compute only — no token cost)</td>
+          </tr>
+          <tr>
+            <td><strong>Accuracy</strong></td>
+            <td>TongueVLM (best published VLM): 78.6% on constitution — with 90,000 proprietary images</td>
+            <td>83.7% on constitution — with 6,719 CC0 images (PMC12160370)</td>
+          </tr>
+          <tr>
+            <td><strong>Explainability</strong></td>
+            <td>LLM-generated rationale — plausible-sounding but not traceable to measured values</td>
+            <td>Every result traces back to specific tongue index scores (body colour Lab values, coating coverage ratio, etc.)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <div class="callout-icon">⚡</div>
+        <div class="callout-body">
+          <strong>Why the classification step is so fast</strong>
+          <p>The constitution lookup is not a search or a generation — it is arithmetic. Once the ResNet-50 backbone has extracted the 37-dimensional feature vector (the slow step, ~100–300ms), the MLP classification is three matrix multiplications: 37×8, 8×8, and 8×9. On any modern CPU this completes in under 1 millisecond. The bottleneck is image transmission over the network, not the classification. This is why determinism and sub-second latency are architectural guarantees rather than engineering targets — they follow directly from using a fixed-weight classifier instead of a generative model.</p>
+        </div>
+      </div>
     </section>
 
     <!-- QUESTIONNAIRE -->
@@ -1016,39 +1098,50 @@
         </div>
       </div>
 
-      <h3>Step 1 — Tongue Segmentation (U2Net-MT)</h3>
-      <p>Before any classification, the raw photograph is preprocessed to isolate the tongue surface from surrounding facial tissue, lips, and teeth. This uses <strong>U2Net-MT</strong> — a semi-supervised adaptation of U2Net incorporating Mean Teacher training — validated at a Dice coefficient of <strong>0.967</strong> for tongue boundary segmentation across 2,738 patients. Source: <a href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1559389/full" target="_blank">Frontiers in Physiology, 2025</a>.</p>
-      <table>
-        <thead><tr><th>Operation</th><th>Purpose</th></tr></thead>
-        <tbody>
-          <tr><td>Region-of-interest detection</td><td>Detect and crop the tongue boundary from the full image</td></tr>
-          <tr><td>Normalisation</td><td>Resize to standard input dimensions; adjust for ambient lighting exposure</td></tr>
-          <tr><td>Humidity adjustment</td><td>Apply Singapore-calibrated colour correction for high-humidity moisture effects on tongue coating</td></tr>
-          <tr><td>Quality gate</td><td>If confidence of tongue detection is below threshold, return <code>IMAGE_QUALITY_LOW</code> and prompt the user to retake</td></tr>
-        </tbody>
-      </table>
+      <div class="tab-bar" id="heuristic-tabs">
+        <button class="tab-btn active" data-tab="h-seg">Segmentation</button>
+        <button class="tab-btn" data-tab="h-feat">Feature Extraction</button>
+        <button class="tab-btn" data-tab="h-mlp">MLP Classification</button>
+        <button class="tab-btn" data-tab="h-rules">Result Rules</button>
+        <button class="tab-btn" data-tab="h-ccmq">Questionnaire</button>
+        <button class="tab-btn" data-tab="h-combo">Combination</button>
+      </div>
 
-      <h3>Step 2 — Feature Extraction</h3>
-      <p>The preprocessed tongue image yields two independent feature sets, following the architecture validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a>:</p>
-      <table>
-        <thead><tr><th>Feature Set</th><th>Count</th><th>What It Captures</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong>Traditional tongue indices</strong></td>
-            <td>11 indices</td>
-            <td>Body colour (舌色), coating colour (苔色), coating thickness (苔质), shape/swelling (舌形), moisture level (津液), teeth-mark presence, petal/crack presence, fat-thin index, red-dot index, fur-coverage index, body-fluid index</td>
-          </tr>
-          <tr>
-            <td><strong>Deep feature vectors</strong></td>
-            <td>26 vectors</td>
-            <td>Convolutional feature map extracted by a ResNet/EfficientNet backbone — captures texture, spatial patterns, and sub-visual features not accessible to manual analysis</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="tab-panel active" id="h-seg">
+        <p>Before any classification, the raw photograph is preprocessed to isolate the tongue surface from surrounding facial tissue, lips, and teeth. This uses <strong>U2Net-MT</strong> — a semi-supervised adaptation of U2Net incorporating Mean Teacher training — validated at a Dice coefficient of <strong>0.967</strong> for tongue boundary segmentation across 2,738 patients. Source: <a href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1559389/full" target="_blank">Frontiers in Physiology, 2025</a>.</p>
+        <table>
+          <thead><tr><th>Operation</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Region-of-interest detection</td><td>Detect and crop the tongue boundary from the full image</td></tr>
+            <tr><td>Normalisation</td><td>Resize to standard input dimensions; adjust for ambient lighting exposure</td></tr>
+            <tr><td>Humidity adjustment</td><td>Apply Singapore-calibrated colour correction for high-humidity moisture effects on tongue coating</td></tr>
+            <tr><td>Quality gate</td><td>If confidence of tongue detection is below threshold, return <code>IMAGE_QUALITY_LOW</code> and prompt the user to retake</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h3>Step 3 — MLP Classification</h3>
-      <p>Both feature sets (11 traditional + 26 deep = 37 total) are concatenated and fed into a Multilayer Perceptron (MLP) with two hidden layers. The output is a <strong>9-class probability distribution</strong> — one confidence score per constitution type, summing to 1.0.</p>
-      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">Input:  [11 traditional features] + [26 deep features]  →  37-dimensional vector
+      <div class="tab-panel" id="h-feat">
+        <p>The preprocessed tongue image yields two independent feature sets, following the architecture validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a>:</p>
+        <table>
+          <thead><tr><th>Feature Set</th><th>Count</th><th>What It Captures</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Traditional tongue indices</strong></td>
+              <td>11 indices</td>
+              <td>Body colour (舌色), coating colour (苔色), coating thickness (苔质), shape/swelling (舌形), moisture level (津液), teeth-mark presence, petal/crack presence, fat-thin index, red-dot index, fur-coverage index, body-fluid index</td>
+            </tr>
+            <tr>
+              <td><strong>Deep feature vectors</strong></td>
+              <td>26 vectors</td>
+              <td>Convolutional feature map extracted by a ResNet/EfficientNet backbone — captures texture, spatial patterns, and sub-visual features not accessible to manual analysis</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-panel" id="h-mlp">
+        <p>Both feature sets (11 traditional + 26 deep = 37 total) are concatenated and fed into a Multilayer Perceptron (MLP) with two hidden layers. The output is a <strong>9-class probability distribution</strong> — one confidence score per constitution type, summing to 1.0.</p>
+        <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">Input:  [11 traditional features] + [26 deep features]  →  37-dimensional vector
 Hidden: Layer 1 (8 nodes, ReLU) → Layer 2 (8 nodes, ReLU)
 Output: Softmax(9 nodes)  →  probability score per constitution
 
@@ -1064,29 +1157,31 @@ Example output:
   "qi_stagnation":   0.09,
   "inherited_special": 0.02
 }</pre>
+      </div>
 
-      <h3>Step 4 — Scan Result Classification Rules</h3>
-      <table>
-        <thead><tr><th>Rule</th><th>Condition</th><th>Result</th></tr></thead>
-        <tbody>
-          <tr><td>Primary constitution</td><td>Highest probability score in output vector</td><td>Reported as main result</td></tr>
-          <tr><td>Secondary constitution</td><td>Any score ≥ 0.20 (20% confidence threshold)</td><td>Reported as co-present</td></tr>
-          <tr><td>Low confidence</td><td>Top score &lt; 0.35</td><td>Flag result as low confidence; show both top two; recommend questionnaire</td></tr>
-          <tr><td>Image quality fail</td><td>Segmentation confidence &lt; minimum threshold</td><td>Return error, prompt retake — no classification issued</td></tr>
-        </tbody>
-      </table>
+      <div class="tab-panel" id="h-rules">
+        <table>
+          <thead><tr><th>Rule</th><th>Condition</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>Primary constitution</td><td>Highest probability score in output vector</td><td>Reported as main result</td></tr>
+            <tr><td>Secondary constitution</td><td>Any score ≥ 0.20 (20% confidence threshold)</td><td>Reported as co-present</td></tr>
+            <tr><td>Low confidence</td><td>Top score &lt; 0.35</td><td>Flag result as low confidence; show both top two; recommend questionnaire</td></tr>
+            <tr><td>Image quality fail</td><td>Segmentation confidence &lt; minimum threshold</td><td>Return error, prompt retake — no classification issued</td></tr>
+          </tbody>
+        </table>
 
-      <div class="callout note" style="margin-top:4px;">
-        <div class="callout-icon">⚙️</div>
-        <div class="callout-body">
-          <strong>Thresholds are configurable</strong>
-          <p>The 0.20 secondary threshold and 0.35 low-confidence threshold are implementation parameters, not fixed mathematical constants. They are tuned based on distribution testing across the TCM-Tongue dataset and updated as Singapore user data accumulates. The current values are documented here; code and docs must match.</p>
+        <div class="callout note" style="margin-top:4px;">
+          <div class="callout-icon">⚙️</div>
+          <div class="callout-body">
+            <strong>Thresholds are configurable</strong>
+            <p>The 0.20 secondary threshold and 0.35 low-confidence threshold are implementation parameters, not fixed mathematical constants. They are tuned based on distribution testing across the TCM-Tongue dataset and updated as Singapore user data accumulates. The current values are documented here; code and docs must match.</p>
+          </div>
         </div>
       </div>
 
-      <h3>Step 5 — CCMQ Questionnaire Scoring</h3>
-      <p>After the tongue scan, users complete a 27-question validated questionnaire (SF-WQ9CCMQ-A). Each question uses a 5-point Likert scale (1 = never → 5 = always). The scoring formula is the published Wang Qi CCMQ formula:</p>
-      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Per constitution subscale (3 questions in the 27-item short form):
+      <div class="tab-panel" id="h-ccmq">
+        <p>After the tongue scan, users complete a 27-question validated questionnaire (SF-WQ9CCMQ-A). Each question uses a 5-point Likert scale (1 = never → 5 = always). The scoring formula is the published Wang Qi CCMQ formula:</p>
+        <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Per constitution subscale (3 questions in the 27-item short form):
 rawScore = sum of answers for that subscale          // range: 3–15
 transformedScore = ((rawScore - items) / (items × 4)) × 100
                  = ((rawScore - 3) / 12) × 100       // range: 0–100
@@ -1099,21 +1194,23 @@ if transformedScore &lt; 30  →  constitution is ABSENT
 if balanced.transformedScore ≥ 60 AND all others &lt; 30  →  PURE BALANCED
 if balanced.transformedScore ≥ 60 AND any other ≥ 30   →  BASICALLY BALANCED
 if any unbalanced ≥ 30                                  →  UNBALANCED (multiple allowed)</pre>
-      <p>Source: Wang Qi et al., validated CCMQ scoring standard. Endorsed by China Association of Chinese Medicine 2009. Validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a> and short-form in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10617149/" target="_blank">PMC10617149</a>.</p>
+        <p>Source: Wang Qi et al., validated CCMQ scoring standard. Endorsed by China Association of Chinese Medicine 2009. Validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a> and short-form in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10617149/" target="_blank">PMC10617149</a>.</p>
+      </div>
 
-      <h3>Step 6 — Result Combination Logic</h3>
-      <p>When both a tongue scan and a questionnaire are completed for the same session, the system applies the following combination logic:</p>
-      <table>
-        <thead><tr><th>Scenario</th><th>Scan says</th><th>Questionnaire says</th><th>Final output</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Agreement</strong></td><td>Constitution A</td><td>Constitution A</td><td>Constitution A — High confidence</td></tr>
-          <tr><td><strong>Partial overlap</strong></td><td>Constitution A (primary), B (secondary)</td><td>Constitution B</td><td>Constitution B — upgraded to primary; show both</td></tr>
-          <tr><td><strong>Disagreement</strong></td><td>Constitution A</td><td>Constitution B (no A)</td><td>Show both results separately; explain the difference; recommend clinical follow-up</td></tr>
-          <tr><td><strong>Scan only</strong></td><td>Constitution A</td><td>Not completed</td><td>Constitution A — note questionnaire not completed</td></tr>
-          <tr><td><strong>Questionnaire only</strong></td><td>Not completed</td><td>Constitution B</td><td>Constitution B from questionnaire only</td></tr>
-        </tbody>
-      </table>
-      <p>Both the raw scan result and the raw questionnaire scores are stored independently in Firestore regardless of the combination outcome — enabling internal validation analytics over time.</p>
+      <div class="tab-panel" id="h-combo">
+        <p>When both a tongue scan and a questionnaire are completed for the same session, the system applies the following combination logic:</p>
+        <table>
+          <thead><tr><th>Scenario</th><th>Scan says</th><th>Questionnaire says</th><th>Final output</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Agreement</strong></td><td>Constitution A</td><td>Constitution A</td><td>Constitution A — High confidence</td></tr>
+            <tr><td><strong>Partial overlap</strong></td><td>Constitution A (primary), B (secondary)</td><td>Constitution B</td><td>Constitution B — upgraded to primary; show both</td></tr>
+            <tr><td><strong>Disagreement</strong></td><td>Constitution A</td><td>Constitution B (no A)</td><td>Show both results separately; explain the difference; recommend clinical follow-up</td></tr>
+            <tr><td><strong>Scan only</strong></td><td>Constitution A</td><td>Not completed</td><td>Constitution A — note questionnaire not completed</td></tr>
+            <tr><td><strong>Questionnaire only</strong></td><td>Not completed</td><td>Constitution B</td><td>Constitution B from questionnaire only</td></tr>
+          </tbody>
+        </table>
+        <p>Both the raw scan result and the raw questionnaire scores are stored independently in Firestore regardless of the combination outcome — enabling internal validation analytics over time.</p>
+      </div>
     </section>
 
     <!-- API REFERENCE -->
@@ -1760,6 +1857,17 @@ python test_suite.py \
 
   fetchLiveStats();
   setInterval(fetchLiveStats, 60_000); // refresh every 60 seconds
+
+  // ── Heuristic tabs ─────────────────────────────────────────────────────────
+  document.getElementById('heuristic-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    const tabId = btn.dataset.tab;
+    document.querySelectorAll('#heuristic-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#heuristic .tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  });
 </script>
 
 </body>
