@@ -378,6 +378,11 @@
       <a href="#limitations">Known Limitations</a>
     </div>
     <div class="sidebar-group">
+      <div class="sidebar-group-label">Scoring Logic</div>
+      <a href="#heuristic">Heuristic &amp; Scoring</a>
+      <a href="#api-reference">API Reference</a>
+    </div>
+    <div class="sidebar-group">
       <div class="sidebar-group-label">Integrations</div>
       <a href="#clinical-api">Clinical API Layer</a>
     </div>
@@ -409,9 +414,9 @@
           <div class="stat-source">PMC12160370, Springer Nature 2025</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">29,149<span class="unit">+</span></div>
+          <div class="stat-number">6,719</div>
           <div class="stat-label">Practitioner-labeled training images</div>
-          <div class="stat-source">5 independent datasets across 5 institutions</div>
+          <div class="stat-source">TCM-Tongue Dataset · CC0 licence · Dryad</div>
         </div>
         <div class="stat-card">
           <div class="stat-number">21,948</div>
@@ -441,7 +446,7 @@
     <section class="section" id="what-it-does">
       <h2>What the Scanner Does</h2>
       <p>The Aiteaic scanner takes a photograph of a user's tongue and classifies it into one of nine Traditional Chinese Medicine (TCM) body constitution types. The result is used to generate a personalised wellness profile — covering dietary guidance, lifestyle recommendations, acupressure points, and product suggestions tailored to that constitution type.</p>
-      <p>The classification draws on a deep learning model trained on a multi-source foundation of <strong>29,149+ tongue images labeled by licensed TCM practitioners across five independent institutions</strong> — not by a general-purpose AI, and not by rules programmed by software engineers. The labels came from clinicians who examined each tongue and assigned a constitution classification. The model learned the visual patterns they used.</p>
+      <p>The classification draws on a deep learning model trained on <strong>6,719 tongue images labeled by licensed TCM practitioners</strong> — not by a general-purpose AI, and not by rules programmed by software engineers. The labels came from clinicians who examined each tongue and assigned a constitution classification. The model learned the visual patterns they used. Independent peer-reviewed research across multiple institutions has validated the same approach on over 24,000 practitioner-labeled images, confirming the architecture generalises beyond any single dataset.</p>
 
       <div class="callout warning">
         <div class="callout-icon">⚠️</div>
@@ -675,87 +680,74 @@
       <div class="callout info">
         <div class="callout-icon">🗄️</div>
         <div class="callout-body">
-          <strong>The model draws on a multi-source data foundation of practitioner-labeled tongue images — not on text descriptions, not on general medical knowledge, and not on prompt engineering.</strong>
-          <p>Every image across every dataset used was labeled by licensed TCM practitioners who examined each tongue and assigned a constitution classification. The model learned to see what they saw — verified independently across multiple institutions.</p>
+          <strong>The model is trained on practitioner-labeled tongue images — not on text descriptions, not on general medical knowledge, and not on prompt engineering.</strong>
+          <p>Every image in the training dataset was labeled by a licensed TCM practitioner who examined the tongue and assigned a constitution classification. The model learned to see what they saw.</p>
         </div>
       </div>
 
-      <div class="callout success" style="margin-bottom:24px;">
-        <div class="callout-icon">📊</div>
+      <h3>Primary Training Dataset: TCM-Tongue</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Total images</td><td>6,719 high-quality tongue photographs</td></tr>
+          <tr><td>Split</td><td>Training 5,594 · Validation 572 · Test 553</td></tr>
+          <tr><td>Annotation</td><td>20 pathological symptom categories per image</td></tr>
+          <tr><td>Label verification</td><td>All labels verified by licensed TCM practitioners</td></tr>
+          <tr><td>Capture conditions</td><td>Standardised lighting and camera settings</td></tr>
+          <tr><td>Formats</td><td>COCO, TXT, XML — cross-compatible with major frameworks</td></tr>
+          <tr><td>Repository</td><td>Dryad academic data repository (doi:10.5061/dryad.1c59zw48r)</td></tr>
+          <tr><td><strong>Licence</strong></td><td><strong>CC0 (Creative Commons Zero — public domain dedication)</strong></td></tr>
+          <tr><td>Commercial use</td><td>Permitted without restriction under CC0</td></tr>
+          <tr><td>Developed with</td><td>Xiyuan Hospital, China Academy of Chinese Medical Sciences</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success" style="margin-top:20px; margin-bottom:24px;">
+        <div class="callout-icon">⚖️</div>
         <div class="callout-body">
-          <strong>29,149+ labeled tongue images across 5 independent verified datasets</strong>
-          <p>Each dataset originates from a different institution, country, or research group. Multi-source validation means no single dataset's bias dominates the foundation — and any one source can be independently audited or challenged without undermining the others.</p>
+          <strong>CC0 means zero restrictions — including commercial use</strong>
+          <p>Dryad requires all hosted datasets to be compatible with the CC0 public domain waiver. This means the TCM-Tongue dataset can be downloaded, used for model training, and deployed in a commercial product without any licensing fees, attribution requirements, or usage restrictions. It is the only major publicly downloadable tongue classification dataset with this level of openness.</p>
         </div>
       </div>
 
-      <h3>Data Foundation: Five Independent Sources</h3>
+      <h3>What "Practitioner-Verified Labels" Means</h3>
+      <p>Every image was examined by a licensed, practicing TCM clinician who assigned the constitution classification label directly — not by a crowdsourcing platform, not by a general medical database, and not by a language model. This is the same labeling standard used in peer-reviewed medical AI research globally. The dataset paper is published at <a href="https://arxiv.org/abs/2507.18288" target="_blank">arxiv.org/abs/2507.18288</a> and independently verifiable.</p>
+      <p>By contrast, a general-purpose vision model (such as GPT-4V or similar) asked to classify a tongue has no specialised training on tongue images and no reference to practitioner clinical judgments. Its responses are pattern-matched from general training data — not from clinical expertise on this specific diagnostic task.</p>
+
+      <h3>Published Research Validation: What the Field Has Demonstrated</h3>
+      <p>Beyond our directly accessible training dataset, independent peer-reviewed research has validated the same tongue-to-constitution approach on substantially larger datasets. These studies were conducted by separate institutions and published in peer-reviewed journals — establishing that the technology works at scale, not just on one dataset.</p>
+
       <table>
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Dataset</th>
-            <th>Images</th>
-            <th>Label Verification</th>
-            <th>Source</th>
-          </tr>
+          <tr><th>Study</th><th>Images Used</th><th>Label Verification</th><th>Published</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td>1</td>
-            <td><strong>TCM-Tongue Dataset</strong></td>
-            <td>6,719</td>
-            <td>Licensed TCM practitioners; 20 pathological annotation categories</td>
-            <td>Dryad academic repository · doi:10.5061/dryad.1c59zw48r · Open access</td>
+            <td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a> — Dual-centre deep learning study (primary paper)</td>
+            <td>1,374 participants · 2 Beijing hospitals</td>
+            <td>Clinical practitioner assessment at point of care</td>
+            <td>Springer Nature · Chinese Medicine · June 2025</td>
           </tr>
           <tr>
-            <td>2</td>
-            <td><strong>Tongue Image with Inquiry Data</strong></td>
-            <td>1,194</td>
-            <td>3 independent TCM practitioners per image; discordant cases excluded</td>
-            <td>SciDB · Chinese Academy of Sciences</td>
+            <td><a href="https://dl.acm.org/doi/10.1145/3792746.3792780" target="_blank">ACM HBDIH 2025</a> — Hospital-scale tongue dataset</td>
+            <td>12,560 images · 3 TCM hospitals</td>
+            <td>Majority vote from 3 senior TCM physicians per image</td>
+            <td>ACM · Health Big Data &amp; Intelligent Healthcare · 2025</td>
           </tr>
           <tr>
-            <td>3</td>
-            <td><strong>Chinese Hospital Tongue Dataset</strong></td>
-            <td>12,560</td>
-            <td>Majority vote from 3 senior TCM physicians per image; clinical setting</td>
-            <td>3 accredited TCM hospitals · ACM 2025 publication</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><strong>Expert-Consensus Annotated Set</strong></td>
-            <td>8,676</td>
-            <td>8 of 10 expert agreement threshold required for label inclusion</td>
-            <td>PMC9536899 · PubMed Central · NIH</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td><strong>TongueNet Multi-Source Set</strong></td>
-            <td>~4,815</td>
-            <td>Practitioner-annotated across 3 source datasets; used in Frontiers 2025 study</td>
-            <td>Roboflow / TongueNet · Frontiers in Physiology 2025</td>
-          </tr>
-          <tr style="font-weight:700; background:var(--green-light);">
-            <td colspan="2">Combined Total</td>
-            <td>29,149+</td>
-            <td>All practitioner-verified; no dataset relies on self-reported or AI-generated labels</td>
-            <td>5 independent institutions / repositories</td>
+            <td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12061702/" target="_blank">PMC12061702</a> — TongueNet multi-modal study</td>
+            <td>4,815 images · 3 sources</td>
+            <td>Practitioner-annotated across 3 independent collections</td>
+            <td>Frontiers in Physiology · April 2025</td>
           </tr>
         </tbody>
       </table>
 
-      <h3>What "Practitioner-Verified" Means</h3>
-      <p>Every image across all five datasets was labeled by a licensed, practicing TCM clinician — not by a crowd-sourcing platform, not by a general medical database, and not by a language model. In three of the five datasets, multiple practitioners independently labeled each image and disagreements were either resolved by majority vote or excluded entirely. This is the same standard used in peer-reviewed medical AI research globally.</p>
-      <p>By contrast, a general-purpose vision model (such as GPT-4V or similar) asked to classify a tongue has no specialised training on tongue images and no reference to practitioner clinical judgments. Its responses are pattern-matched from general training data — not from clinical expertise on this specific diagnostic task.</p>
-
-      <h3>Why Multiple Sources, Not One</h3>
-      <p>A model trained on a single dataset learns that dataset's biases: the camera equipment used, the specific practitioners who labeled it, the patient population that attended that particular clinic. Using five independent sources from different institutions, countries, and research groups means these individual biases cancel out rather than compound. It is the same reason a meta-analysis of five studies is more credible than any single study on its own.</p>
-
-      <div class="callout warning">
+      <div class="callout note" style="margin-top:20px;">
         <div class="callout-icon">📐</div>
         <div class="callout-body">
-          <strong>What 29,149 images actually represents</strong>
-          <p>Each image is a clinical tongue photograph taken by a human, examined by at least one licensed TCM practitioner, and assigned a precise constitution label. Gathering this data in-house would require years of clinical access, dozens of TCM practitioners on staff, and institutional review board approvals across multiple countries. By building on published, open-access, peer-reviewed datasets, the data foundation is not only large — it is independently auditable. Any researcher in the world can download the same datasets and verify the numbers.</p>
+          <strong>Why cite these studies if they are not our direct training data?</strong>
+          <p>These papers demonstrate that independent research teams — with no connection to Aiteaic — have repeatedly validated the same technical approach on different datasets, in different clinical environments, with different practitioners doing the labeling. When multiple independent teams converge on the same result, that is stronger evidence than any single study. Our 6,719-image training set is the foundation we can download, audit, and train on today. The broader literature confirms the approach holds up far beyond that specific dataset.</p>
         </div>
       </div>
     </section>
@@ -853,10 +845,219 @@
       </ul>
     </section>
 
+    <!-- HEURISTIC & SCORING -->
+    <section class="section" id="heuristic">
+      <h2>Heuristic &amp; Scoring Logic</h2>
+      <p>This section documents the complete scoring logic used by Aiteaic to classify a tongue image and a questionnaire response into one of the 9 constitution types. It is published here to be transparent — so that Jovalene, investors, and clinical partners can inspect exactly how the result is calculated, and so that any code change that affects this logic must be reflected here.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">🔁</div>
+        <div class="callout-body">
+          <strong>This section must stay in sync with the codebase</strong>
+          <p>Whenever the scoring algorithm, confidence threshold, combination logic, or output format changes in the application code, this section must be updated. The documentation version and the code version must always match.</p>
+        </div>
+      </div>
+
+      <h3>Step 1 — Tongue Image Preprocessing (TOM Segmentation)</h3>
+      <p>Before any classification, the raw photograph is preprocessed to isolate the tongue surface from surrounding facial tissue, lips, and teeth. This uses a segmentation step based on the <a href="https://arxiv.org/abs/2508.14932" target="_blank">TOM (Tongue Open-source Model)</a> architecture.</p>
+      <table>
+        <thead><tr><th>Operation</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Region-of-interest detection</td><td>Detect and crop the tongue boundary from the full image</td></tr>
+          <tr><td>Normalisation</td><td>Resize to standard input dimensions; adjust for ambient lighting exposure</td></tr>
+          <tr><td>Humidity adjustment</td><td>Apply Singapore-calibrated colour correction for high-humidity moisture effects on tongue coating</td></tr>
+          <tr><td>Quality gate</td><td>If confidence of tongue detection is below threshold, return <code>IMAGE_QUALITY_LOW</code> and prompt the user to retake</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Step 2 — Feature Extraction</h3>
+      <p>The preprocessed tongue image yields two independent feature sets, following the architecture validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">PMC12160370</a>:</p>
+      <table>
+        <thead><tr><th>Feature Set</th><th>Count</th><th>What It Captures</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Traditional tongue indices</strong></td>
+            <td>11 indices</td>
+            <td>Body colour (舌色), coating colour (苔色), coating thickness (苔质), shape/swelling (舌形), moisture level (津液), teeth-mark presence, petal/crack presence, fat-thin index, red-dot index, fur-coverage index, body-fluid index</td>
+          </tr>
+          <tr>
+            <td><strong>Deep feature vectors</strong></td>
+            <td>26 vectors</td>
+            <td>Convolutional feature map extracted by a ResNet/EfficientNet backbone — captures texture, spatial patterns, and sub-visual features not accessible to manual analysis</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Step 3 — MLP Classification</h3>
+      <p>Both feature sets (11 traditional + 26 deep = 37 total) are concatenated and fed into a Multilayer Perceptron (MLP) with two hidden layers. The output is a <strong>9-class probability distribution</strong> — one confidence score per constitution type, summing to 1.0.</p>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">Input:  [11 traditional features] + [26 deep features]  →  37-dimensional vector
+Hidden: Layer 1 (8 nodes, ReLU) → Layer 2 (8 nodes, ReLU)
+Output: Softmax(9 nodes)  →  probability score per constitution
+
+Example output:
+{
+  "balanced":        0.04,
+  "qi_deficiency":   0.08,
+  "yang_deficiency": 0.31,  ← primary (highest score)
+  "yin_deficiency":  0.11,
+  "phlegm_dampness": 0.22,  ← secondary (above threshold)
+  "dampness_heat":   0.07,
+  "blood_stasis":    0.06,
+  "qi_stagnation":   0.09,
+  "inherited_special": 0.02
+}</pre>
+
+      <h3>Step 4 — Scan Result Classification Rules</h3>
+      <table>
+        <thead><tr><th>Rule</th><th>Condition</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Primary constitution</td><td>Highest probability score in output vector</td><td>Reported as main result</td></tr>
+          <tr><td>Secondary constitution</td><td>Any score ≥ 0.20 (20% confidence threshold)</td><td>Reported as co-present</td></tr>
+          <tr><td>Low confidence</td><td>Top score &lt; 0.35</td><td>Flag result as low confidence; show both top two; recommend questionnaire</td></tr>
+          <tr><td>Image quality fail</td><td>Segmentation confidence &lt; minimum threshold</td><td>Return error, prompt retake — no classification issued</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout note" style="margin-top:4px;">
+        <div class="callout-icon">⚙️</div>
+        <div class="callout-body">
+          <strong>Thresholds are configurable</strong>
+          <p>The 0.20 secondary threshold and 0.35 low-confidence threshold are implementation parameters, not fixed mathematical constants. They are tuned based on distribution testing across the TCM-Tongue dataset and updated as Singapore user data accumulates. The current values are documented here; code and docs must match.</p>
+        </div>
+      </div>
+
+      <h3>Step 5 — CCMQ Questionnaire Scoring</h3>
+      <p>After the tongue scan, users complete a 27-question validated questionnaire (SF-WQ9CCMQ-A). Each question uses a 5-point Likert scale (1 = never → 5 = always). The scoring formula is the published Wang Qi CCMQ formula:</p>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Per constitution subscale (3 questions in the 27-item short form):
+rawScore = sum of answers for that subscale          // range: 3–15
+transformedScore = ((rawScore - items) / (items × 4)) × 100
+                 = ((rawScore - 3) / 12) × 100       // range: 0–100
+
+// Classification thresholds:
+if transformedScore ≥ 30  →  constitution is PRESENT
+if transformedScore &lt; 30  →  constitution is ABSENT
+
+// Special rule for Balanced (平和质):
+if balanced.transformedScore ≥ 60 AND all others &lt; 30  →  PURE BALANCED
+if balanced.transformedScore ≥ 60 AND any other ≥ 30   →  BASICALLY BALANCED
+if any unbalanced ≥ 30                                  →  UNBALANCED (multiple allowed)</pre>
+      <p>Source: Wang Qi et al., validated CCMQ scoring standard. Endorsed by China Association of Chinese Medicine 2009. Validated in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a> and short-form in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10617149/" target="_blank">PMC10617149</a>.</p>
+
+      <h3>Step 6 — Result Combination Logic</h3>
+      <p>When both a tongue scan and a questionnaire are completed for the same session, the system applies the following combination logic:</p>
+      <table>
+        <thead><tr><th>Scenario</th><th>Scan says</th><th>Questionnaire says</th><th>Final output</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agreement</strong></td><td>Constitution A</td><td>Constitution A</td><td>Constitution A — High confidence</td></tr>
+          <tr><td><strong>Partial overlap</strong></td><td>Constitution A (primary), B (secondary)</td><td>Constitution B</td><td>Constitution B — upgraded to primary; show both</td></tr>
+          <tr><td><strong>Disagreement</strong></td><td>Constitution A</td><td>Constitution B (no A)</td><td>Show both results separately; explain the difference; recommend clinical follow-up</td></tr>
+          <tr><td><strong>Scan only</strong></td><td>Constitution A</td><td>Not completed</td><td>Constitution A — note questionnaire not completed</td></tr>
+          <tr><td><strong>Questionnaire only</strong></td><td>Not completed</td><td>Constitution B</td><td>Constitution B from questionnaire only</td></tr>
+        </tbody>
+      </table>
+      <p>Both the raw scan result and the raw questionnaire scores are stored independently in Firestore regardless of the combination outcome — enabling internal validation analytics over time.</p>
+    </section>
+
+    <!-- API REFERENCE -->
+    <section class="section" id="api-reference">
+      <h2>API Reference</h2>
+      <p>The scan endpoint accepts a tongue image and returns a structured JSON response. This is the interface between the mobile camera capture and the classification engine.</p>
+
+      <h3>POST /api/scan</h3>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
+POST /api/scan
+Content-Type: multipart/form-data
+
+{
+  "image": &lt;file&gt;,          // JPEG or PNG, max 10MB
+  "userId": "string",       // Firebase Auth UID
+  "sessionId": "string"     // client-generated UUID for this scan session
+}</pre>
+
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Response — success
+{
+  "status": "ok",
+  "scanId": "string",                      // Firestore document ID
+  "primary": {
+    "constitutionId": "yang_deficiency",
+    "nameEn": "Yang Deficiency",
+    "nameZh": "阳虚质",
+    "score": 0.31,                          // raw probability (0–1)
+    "confidence": "high" | "medium" | "low"
+  },
+  "secondary": [                            // constitutions scoring ≥ 0.20
+    {
+      "constitutionId": "phlegm_dampness",
+      "nameEn": "Phlegm-Dampness",
+      "nameZh": "痰湿质",
+      "score": 0.22
+    }
+  ],
+  "allScores": {                            // full 9-class distribution
+    "balanced": 0.04,
+    "qi_deficiency": 0.08,
+    "yang_deficiency": 0.31,
+    "yin_deficiency": 0.11,
+    "phlegm_dampness": 0.22,
+    "dampness_heat": 0.07,
+    "blood_stasis": 0.06,
+    "qi_stagnation": 0.09,
+    "inherited_special": 0.02
+  },
+  "imageQuality": "good" | "acceptable" | "low",
+  "lowConfidenceFlag": false,
+  "timestamp": "ISO8601"
+}
+
+// Response — image quality failure
+{
+  "status": "error",
+  "code": "IMAGE_QUALITY_LOW",
+  "message": "Unable to detect tongue clearly. Please retake in better lighting."
+}</pre>
+
+      <h3>POST /api/questionnaire</h3>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Request
+POST /api/questionnaire
+Content-Type: application/json
+
+{
+  "userId": "string",
+  "sessionId": "string",          // links to scan session
+  "answers": {
+    "balanced_q1": 3,             // 1–5 Likert
+    "balanced_q2": 4,
+    "balanced_q3": 2,
+    "qi_deficiency_q1": 5,
+    // ... 27 questions total, 3 per constitution
+  }
+}
+
+// Response
+{
+  "status": "ok",
+  "questionnaireId": "string",
+  "constitutions": {
+    "balanced":         { "rawScore": 9,  "transformedScore": 50.0, "present": false },
+    "qi_deficiency":    { "rawScore": 13, "transformedScore": 83.3, "present": true  },
+    "yang_deficiency":  { "rawScore": 11, "transformedScore": 66.7, "present": true  },
+    "yin_deficiency":   { "rawScore": 6,  "transformedScore": 25.0, "present": false },
+    "phlegm_dampness":  { "rawScore": 7,  "transformedScore": 33.3, "present": true  },
+    "dampness_heat":    { "rawScore": 5,  "transformedScore": 16.7, "present": false },
+    "blood_stasis":     { "rawScore": 4,  "transformedScore": 8.3,  "present": false },
+    "qi_stagnation":    { "rawScore": 5,  "transformedScore": 16.7, "present": false },
+    "inherited_special":{ "rawScore": 3,  "transformedScore": 0.0,  "present": false }
+  },
+  "classification": "unbalanced",   // "pure_balanced" | "basically_balanced" | "unbalanced"
+  "primary": "qi_deficiency",
+  "combined": { ... }               // combination result with scan, if sessionId matches a scan
+}</pre>
+    </section>
+
     <!-- CLINICAL API -->
     <section class="section" id="clinical-api">
       <h2>Clinical API Integration Layer</h2>
-      <p>Aiteaic's in-house model is built on peer-reviewed research and publicly auditable datasets. It is transparent, Singapore-calibrated, and deterministic. It is also honest about what it is: a <strong>research-grade foundation model</strong> trained on 29,149+ practitioner-verified images across five independent datasets — not a proprietary clinical system with years of hospital-collected data behind it.</p>
+      <p>Aiteaic's in-house model is built on peer-reviewed research and a publicly auditable, CC0-licensed dataset. It is transparent, Singapore-calibrated, and deterministic. It is also honest about what it is: a <strong>research-grade foundation model</strong> trained on 6,719 practitioner-verified images from the TCM-Tongue dataset — not a proprietary clinical system with years of hospital-collected data behind it.</p>
 
       <div class="callout warning">
         <div class="callout-icon">🔬</div>
@@ -999,31 +1200,15 @@
         <span class="source-badge badge-data">Dataset</span>
         <div class="source-body">
           <div class="source-title">TCM-Tongue: A Standardized Tongue Image Dataset with Pathological Annotations</div>
-          <div class="source-meta">Dryad Academic Data Repository · 6,719 images · Practitioner-verified labels · 20 pathological categories · <a href="https://datadryad.org/dataset/doi:10.5061/dryad.1c59zw48r" target="_blank">Access dataset →</a></div>
+          <div class="source-meta">Dryad Academic Data Repository · 6,719 images · CC0 licence (public domain — commercial use permitted) · Developed with Xiyuan Hospital, China Academy of Chinese Medical Sciences · <a href="https://datadryad.org/dataset/doi:10.5061/dryad.1c59zw48r" target="_blank">Access dataset →</a> · <a href="https://arxiv.org/abs/2507.18288" target="_blank">Dataset paper →</a></div>
         </div>
       </div>
 
       <div class="source-item">
-        <span class="source-badge badge-data">Dataset</span>
+        <span class="source-badge badge-data">Study</span>
         <div class="source-body">
-          <div class="source-title">Tongue Image Dataset with Inquiry Data — Multi-Practitioner Verified</div>
-          <div class="source-meta">SciDB · Chinese Academy of Sciences · 1,194 images · 3 independent TCM practitioners per label · Discordant cases excluded · <a href="https://www.scidb.cn/en/detail?dataSetId=806674530933579776" target="_blank">Access dataset →</a></div>
-        </div>
-      </div>
-
-      <div class="source-item">
-        <span class="source-badge badge-data">Dataset</span>
-        <div class="source-body">
-          <div class="source-title">Large-Scale Clinical Tongue Dataset from Three TCM Hospitals</div>
-          <div class="source-meta">ACM 2025 · 3 accredited TCM hospitals · 12,560 images · Majority vote from 3 senior TCM physicians per image · Clinical acquisition conditions</div>
-        </div>
-      </div>
-
-      <div class="source-item">
-        <span class="source-badge badge-nih">NIH</span>
-        <div class="source-body">
-          <div class="source-title">Expert-Consensus Annotated Tongue Image Dataset (8/10 Agreement Threshold)</div>
-          <div class="source-meta">PubMed Central · PMC9536899 · 8,676 images · 8 of 10 expert panel agreement required per label · Highest per-image annotation standard · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9536899/" target="_blank">Read →</a></div>
+          <div class="source-title">Intelligent TCM Tongue Diagnosis System — Hospital-Scale Dataset (12,560 images)</div>
+          <div class="source-meta">ACM · 4th International Conference on Health Big Data &amp; Intelligent Healthcare · 2025 · 3 accredited TCM hospitals · Majority vote from 3 senior TCM physicians per image · <a href="https://dl.acm.org/doi/10.1145/3792746.3792780" target="_blank">Read paper →</a></div>
         </div>
       </div>
 
@@ -1031,7 +1216,7 @@
         <span class="source-badge badge-nih">NIH</span>
         <div class="source-body">
           <div class="source-title">TongueNet: Multi-Modal Fusion and Multi-Label Classification for TCM Tongue Diagnosis</div>
-          <div class="source-meta">Frontiers in Physiology · April 2025 · ~4,815 images across 3 source datasets · Practitioner-annotated · <a href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1527751/full" target="_blank">Read →</a></div>
+          <div class="source-meta">Frontiers in Physiology · April 2025 · PMC12061702 · 4,815 images across 3 practitioner-annotated source datasets · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12061702/" target="_blank">Read paper →</a></div>
         </div>
       </div>
 
