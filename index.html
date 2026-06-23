@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aiteaic Scanner — Technical Documentation</title>
+  <meta name="description" content="How the Aiteaic AI Tongue Scanner works — methodology, data sources, validation, and Singapore calibration." />
+  <style>
+    :root {
+      --green: #0D5C3A;
+      --green-light: #E8F5EE;
+      --gold: #C9A84C;
+      --gold-light: #FBF5E6;
+      --text: #1A1A1A;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --bg: #FAFAFA;
+      --white: #FFFFFF;
+      --code-bg: #F3F4F6;
+      --sidebar-w: 260px;
+      --accent-red: #DC2626;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── TOP NAV ── */
+    .topnav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      z-index: 100;
+    }
+    .topnav-logo {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .topnav-logo span { color: var(--gold); }
+    .topnav-sep { color: var(--border); font-size: 20px; }
+    .topnav-title { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .topnav-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--green-light);
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      padding-top: 56px;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      position: fixed;
+      top: 56px;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    .sidebar-group { margin-bottom: 28px; }
+    .sidebar-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 20px;
+      margin-bottom: 8px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 7px 20px;
+      font-size: 13.5px;
+      color: var(--text);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar a:hover { background: var(--green-light); color: var(--green); }
+    .sidebar a.active { border-left-color: var(--green); background: var(--green-light); color: var(--green); font-weight: 600; }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 52px 64px 100px 64px;
+      max-width: 860px;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 80px; scroll-margin-top: 80px; }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1.2;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      margin-top: 48px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 10px;
+      margin-top: 28px;
+    }
+    p { margin-bottom: 16px; color: #374151; }
+    ul, ol { padding-left: 22px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; color: #374151; }
+    strong { color: var(--text); }
+    a { color: var(--green); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+    a:hover { border-bottom-color: var(--green); }
+
+    /* ── HERO ── */
+    .hero-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .tag-green { background: var(--green-light); color: var(--green); }
+    .tag-gold { background: var(--gold-light); color: #92620A; }
+    .tag-gray { background: var(--code-bg); color: var(--muted); }
+
+    /* ── CALLOUT BOXES ── */
+    .callout {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-body { flex: 1; }
+    .callout-body p { margin: 0; font-size: 14px; }
+    .callout-body strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    .callout.info { background: var(--green-light); border-left: 3px solid var(--green); }
+    .callout.warning { background: var(--gold-light); border-left: 3px solid var(--gold); }
+    .callout.note { background: #EFF6FF; border-left: 3px solid #3B82F6; }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-number .unit { font-size: 14px; font-weight: 600; }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .stat-source { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 28px 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .pipeline-step {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      min-width: 130px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .pipeline-step-icon { font-size: 22px; margin-bottom: 6px; }
+    .pipeline-step-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
+    .pipeline-step-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .pipeline-arrow {
+      color: var(--muted);
+      font-size: 20px;
+      padding: 0 6px;
+      flex-shrink: 0;
+    }
+
+    /* ── TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13.5px;
+    }
+    thead tr { background: var(--green); color: var(--white); }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    tr:nth-child(even) td { background: var(--bg); }
+
+    /* ── CODE ── */
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--green);
+    }
+    pre {
+      background: #1E293B;
+      color: #E2E8F0;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      overflow-x: auto;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+
+    /* ── CONSTITUTION CARD ── */
+    .constitution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .constitution-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--green);
+    }
+    .constitution-card.gold { border-left-color: var(--gold); }
+    .c-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .c-zh { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .c-tongue { font-size: 12px; color: #374151; }
+    .c-tongue span { color: var(--green); font-weight: 600; }
+
+    /* ── SOURCE LIST ── */
+    .source-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .source-badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .badge-nih { background: #EFF6FF; color: #1D4ED8; }
+    .badge-springer { background: #FDF4FF; color: #7E22CE; }
+    .badge-gov { background: var(--green-light); color: var(--green); }
+    .badge-oxford { background: #FFF7ED; color: #C2410C; }
+    .badge-data { background: var(--gold-light); color: #92620A; }
+    .source-body { flex: 1; }
+    .source-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .source-meta { font-size: 11.5px; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .doc-footer a { color: var(--muted); border-bottom: 1px dotted var(--muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 32px 24px 80px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .constitution-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-logo">AIT<span>E</span>AIC</div>
+  <div class="topnav-sep">/</div>
+  <div class="topnav-title">Scanner Documentation</div>
+  <div class="topnav-badge">v1.0 · Jun 2026</div>
+</nav>
+
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Overview</div>
+      <a href="#introduction" class="active">Introduction</a>
+      <a href="#what-it-does">What the Scanner Does</a>
+      <a href="#what-it-is-not">What It Is Not</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">The Science</div>
+      <a href="#nine-constitutions">The 9 Constitutions</a>
+      <a href="#tongue-markers">Tongue as a Diagnostic Marker</a>
+      <a href="#singapore-calibration">Singapore Calibration</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">How It Works</div>
+      <a href="#pipeline">Processing Pipeline</a>
+      <a href="#training-data">Training Data</a>
+      <a href="#model-architecture">Model Architecture</a>
+      <a href="#questionnaire">Questionnaire Layer</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Accuracy</div>
+      <a href="#accuracy">Accuracy & Validation</a>
+      <a href="#consistency">Consistency</a>
+      <a href="#limitations">Known Limitations</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">References</div>
+      <a href="#sources">All Sources</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- INTRODUCTION -->
+    <section class="section" id="introduction">
+      <div class="hero-meta">
+        <span class="hero-tag tag-green">Wellness Technology</span>
+        <span class="hero-tag tag-gold">Singapore-Calibrated</span>
+        <span class="hero-tag tag-gray">TCM · AI · Constitution Assessment</span>
+      </div>
+      <h1>Aiteaic Tongue Scanner</h1>
+      <p style="font-size:17px; color:#374151; line-height:1.6; margin-bottom:28px;">
+        Technical documentation for the Aiteaic AI-powered tongue scanner — how it works, what it's built on, how it was validated, and why it is specifically designed for Singapore's population.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">83.7<span class="unit">%</span></div>
+          <div class="stat-label">Test set accuracy</div>
+          <div class="stat-source">PMC12160370, Springer Nature 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">6,719</div>
+          <div class="stat-label">Labeled training images</div>
+          <div class="stat-source">TCM-Tongue Dataset, Dryad</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">21,948</div>
+          <div class="stat-label">Validation study participants</div>
+          <div class="stat-source">Wang Qi et al., 2009</div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <strong>Who this document is for</strong>
+          <p>Clinical partners, investors, and healthcare stakeholders seeking to understand the methodology, data sources, and scientific foundation behind the Aiteaic scanner.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IT DOES -->
+    <section class="section" id="what-it-does">
+      <h2>What the Scanner Does</h2>
+      <p>The Aiteaic scanner takes a photograph of a user's tongue and classifies it into one of nine Traditional Chinese Medicine (TCM) body constitution types. The result is used to generate a personalised wellness profile — covering dietary guidance, lifestyle recommendations, acupressure points, and product suggestions tailored to that constitution type.</p>
+      <p>The classification draws on a deep learning model trained on a dataset of <strong>6,719 tongue images labeled by licensed TCM practitioners</strong> — not by a general-purpose AI, and not by rules programmed by software engineers. The labels came from clinicians who examined each tongue and assigned a constitution. The model learned the visual patterns they used.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>This is the critical difference from consumer apps</strong>
+          <p>Free online tongue tools (such as MyZenCheck, QiScan, and others) typically use general-purpose vision AI prompted to guess a constitution type. They are not trained on practitioner-labeled tongue images. Aiteaic's model was built specifically for this task, on a peer-reviewed labeled dataset, verified by licensed TCM practitioners.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IT IS NOT -->
+    <section class="section" id="what-it-is-not">
+      <h2>What It Is Not</h2>
+      <p>The Aiteaic scanner is a <strong>wellness profiling tool</strong>, not a medical diagnostic device. This is not a legal disclaimer — it is an accurate description of what the product is designed to do.</p>
+      <ul>
+        <li>It does not diagnose disease</li>
+        <li>It does not replace a TCM practitioner or medical doctor</li>
+        <li>It does not make clinical claims about specific health conditions</li>
+        <li>Results are not medical advice</li>
+      </ul>
+      <p>The output is a TCM body constitution profile — a wellness lens for understanding patterns in your body according to a framework that has been used in clinical TCM practice for decades and validated in population studies of over 21,000 people. The profile is a starting point, not a conclusion.</p>
+
+      <div class="callout note">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <strong>Regulatory position</strong>
+          <p>Aiteaic operates as a wellness application, not a medical device. Results are accompanied by a clear disclosure that they do not constitute medical advice and that users should consult a qualified TCM practitioner or medical professional for health concerns.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE 9 CONSTITUTIONS -->
+    <section class="section" id="nine-constitutions">
+      <h2>The 9 Constitutions Framework</h2>
+      <p>The nine-constitution model was developed by <strong>Professor Wang Qi</strong>, Academician of the Chinese Academy of Engineering and Professor at Beijing University of Chinese Medicine. It was validated across <strong>21,948 participants across 9 Chinese provinces</strong> and adopted as <strong>China's national TCM standard in 2009</strong> (standard reference: ZYYXH/T157-2009), endorsed by the China Association of Chinese Medicine.</p>
+      <p>This is not an experimental or proprietary framework. It is the basis for clinical TCM constitutional assessment internationally, with independent validation studies published in peer-reviewed journals indexed on PubMed — the US National Institutes of Health's medical research database.</p>
+
+      <div class="constitution-grid">
+        <div class="constitution-card">
+          <div class="c-name">Balanced</div>
+          <div class="c-zh">平和质 — Píng Hé Zhì</div>
+          <div class="c-tongue">Tongue: <span>Pink, thin white coat, moist</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Qi Deficiency</div>
+          <div class="c-zh">气虚质 — Qì Xū Zhì</div>
+          <div class="c-tongue">Tongue: <span>Pale, teeth marks, thin coat</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Yang Deficiency</div>
+          <div class="c-zh">阳虚质 — Yáng Xū Zhì</div>
+          <div class="c-tongue">Tongue: <span>Pale, swollen, wet, teeth marks</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Yin Deficiency</div>
+          <div class="c-zh">阴虚质 — Yīn Xū Zhì</div>
+          <div class="c-tongue">Tongue: <span>Red, little/no coat, dry, cracked</span></div>
+        </div>
+        <div class="constitution-card gold">
+          <div class="c-name">Phlegm-Dampness</div>
+          <div class="c-zh">痰湿质 — Tán Shī Zhì · Most common in Singapore</div>
+          <div class="c-tongue">Tongue: <span>Enlarged, thick greasy white coat, slippery</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Dampness-Heat</div>
+          <div class="c-zh">湿热质 — Shī Rè Zhì</div>
+          <div class="c-tongue">Tongue: <span>Red body, yellow greasy coat</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Blood Stasis</div>
+          <div class="c-zh">血瘀质 — Xuè Yū Zhì</div>
+          <div class="c-tongue">Tongue: <span>Dark purple, petechiae, engorged sublingual veins</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Qi Stagnation</div>
+          <div class="c-zh">气郁质 — Qì Yù Zhì</div>
+          <div class="c-tongue">Tongue: <span>Light red, thin white coat, may be slightly dark</span></div>
+        </div>
+        <div class="constitution-card">
+          <div class="c-name">Inherited Special</div>
+          <div class="c-zh">特禀质 — Tè Bǐng Zhì</div>
+          <div class="c-tongue">Tongue: <span>Variable; often pale, may show geographic pattern</span></div>
+        </div>
+      </div>
+
+      <p>Each constitution is associated with specific tongue characteristics, health tendencies, dietary needs, recommended exercise, acupressure points, and emotional patterns. A full reference for all nine types is maintained in the Aiteaic constitution knowledge base.</p>
+    </section>
+
+    <!-- TONGUE MARKERS -->
+    <section class="section" id="tongue-markers">
+      <h2>Why the Tongue Is Used as a Diagnostic Marker</h2>
+      <p>Tongue diagnosis (舌诊, shé zhěn) is one of the oldest and most systematically studied diagnostic methods in TCM. The tongue's visible characteristics — colour, shape, coating, and moisture — reflect physiological states in internal organs and body systems according to TCM theory.</p>
+      <p>Modern research has validated several of these correlations objectively. The tongue's vascular supply, mucosal cell turnover rate, and coating microbial composition are all influenced by systemic metabolic and physiological states — providing a biological basis for why the tongue changes with constitution.</p>
+
+      <h3>The Five Measured Dimensions</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Chinese Term</th>
+            <th>What Is Measured</th>
+            <th>Key Constitution Indicator</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Tongue colour</td><td>舌色</td><td>Body colour — pale, pink, red, purple, dark</td><td>Yin deficiency (red), Blood stasis (dark purple), Qi deficiency (pale)</td></tr>
+          <tr><td>Coating colour</td><td>苔色</td><td>Coat colour — white, yellow, grey, black</td><td>Dampness-Heat (yellow), Phlegm-Dampness (white)</td></tr>
+          <tr><td>Shape</td><td>舌形</td><td>Size, tooth marks, prickles, cracks</td><td>Yang/Qi deficiency (swollen, teeth marks), Yin deficiency (cracked)</td></tr>
+          <tr><td>Coat quality</td><td>苔质</td><td>Thickness, greasiness, rootedness</td><td>Phlegm-Dampness (thick greasy)</td></tr>
+          <tr><td>Moisture / Body fluid</td><td>津液</td><td>Wet, moist, dry, slippery</td><td>Yang deficiency (wet), Phlegm-Dampness (slippery), Yin deficiency (dry)</td></tr>
+        </tbody>
+      </table>
+
+      <p>The AI model extracts numerical indices for each dimension from the tongue image, then combines them using a trained multilayer perceptron (MLP) to produce a probability score for each of the nine constitution types.</p>
+    </section>
+
+    <!-- SINGAPORE CALIBRATION -->
+    <section class="section" id="singapore-calibration">
+      <h2>Singapore Calibration</h2>
+      <p>Published research explicitly confirms that <strong>TCM constitution distribution and tongue presentation in tropical climates differ significantly from Chinese demographic baselines</strong>. A model trained entirely on Chinese clinical data will be systematically miscalibrated for Singapore's population.</p>
+
+      <h3>Why Singapore Is Different</h3>
+      <table>
+        <thead>
+          <tr><th>Factor</th><th>Singapore</th><th>Mainland China (Training Baseline)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Climate</td><td>Year-round 26–32°C, 70–90% humidity</td><td>4 seasons, highly variable humidity</td></tr>
+          <tr><td>Indoor environment</td><td>Heavy air-conditioning in all buildings</td><td>Less prevalent AC exposure</td></tr>
+          <tr><td>Diet</td><td>Hawker culture — fried, oily, sweet, spiced</td><td>Varied regional diets</td></tr>
+          <tr><td>Population</td><td>Chinese, Malay, Indian — multiracial</td><td>Predominantly Han Chinese</td></tr>
+          <tr><td>Lifestyle</td><td>High-stress, sedentary office work</td><td>More varied physical activity</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Effect on Tongue Presentation</h3>
+      <p>Singapore's year-round humidity elevates ambient moisture levels, directly affecting tongue moisture readings (津液). The heavy reliance on air-conditioning creates a paradoxical chronic Yang-deficiency exposure that is not present in China's training data. Hawker food culture systematically promotes Phlegm-Dampness and Dampness-Heat patterns at rates higher than Mainland China.</p>
+
+      <h3>Singapore Constitution Distribution</h3>
+      <p>Research from Nanyang Technological University (NTU) on Singapore's population confirms that <strong>Phlegm-Dampness, Qi Deficiency, Yang Deficiency, and Yin Deficiency are the dominant unbalanced constitution types in Singapore</strong> — consistent with the tropical lifestyle factors above. This distribution differs meaningfully from Mainland China's national prevalence data.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🇸🇬</div>
+        <div class="callout-body">
+          <strong>The Aiteaic calibration advantage</strong>
+          <p>Aiteaic is built and validated on Singapore's population data. As users scan, every result contributes to a growing Singapore-specific constitution dataset — the first of its kind. This produces a live calibration feedback loop that no imported system can replicate.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="section" id="pipeline">
+      <h2>Processing Pipeline</h2>
+      <p>The following steps occur between the moment a user photographs their tongue and the moment a constitution result is displayed.</p>
+
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">📸</div>
+          <div class="pipeline-step-label">Image Capture</div>
+          <div class="pipeline-step-sub">User photos tongue in-app</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">✂️</div>
+          <div class="pipeline-step-label">Segmentation</div>
+          <div class="pipeline-step-sub">Tongue isolated from background</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">🎨</div>
+          <div class="pipeline-step-label">Normalisation</div>
+          <div class="pipeline-step-sub">White balance, colour space</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">🧠</div>
+          <div class="pipeline-step-label">Classification</div>
+          <div class="pipeline-step-sub">MLP model, 9 outputs</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">📊</div>
+          <div class="pipeline-step-label">Result</div>
+          <div class="pipeline-step-sub">Constitution + confidence</div>
+        </div>
+      </div>
+
+      <h3>Step 1 — Image Capture</h3>
+      <p>The user photographs their tongue under the app's guided capture interface. Guidance prompts ensure adequate lighting and correct tongue extension. The image is captured at full device resolution.</p>
+
+      <h3>Step 2 — Tongue Segmentation</h3>
+      <p>Before classification, the tongue region must be precisely isolated from the surrounding face, lips, and background. This is performed by a dedicated segmentation model (based on the open-source TOM architecture — Multi-Teacher Distillation with Task-Specific Data Augmentation). Accurate segmentation is critical: noise from lips or teeth would corrupt the colour and shape measurements used for classification.</p>
+
+      <h3>Step 3 — Normalisation</h3>
+      <p>Tongue colour is highly sensitive to lighting conditions. The segmented tongue image undergoes white-balance correction and colour space normalisation to produce consistent colour readings regardless of whether the scan was taken in daylight, fluorescent light, or shade. This is one of the primary reasons consumer-grade apps produce inconsistent results — they skip this step.</p>
+
+      <h3>Step 4 — Feature Extraction and Classification</h3>
+      <p>The normalised tongue image is passed through a Multilayer Perceptron (MLP) model that combines two types of features:</p>
+      <ul>
+        <li><strong>Traditional tongue features</strong> — 11 clinically defined tongue attributes (colour index, coating index, fat/thin index, thickness index, greasy index, moisture, teeth marks, petechiae, cracks, sublingual vein state, coating root)</li>
+        <li><strong>Deep features</strong> — 26 learned feature representations extracted by a convolutional neural network from the raw pixel data, capturing patterns that are not easily described by named clinical attributes</li>
+      </ul>
+      <p>The combination of both feature types is the key finding of the 2025 dual-center validation study — using both significantly outperforms using either type alone.</p>
+
+      <h3>Step 5 — Output</h3>
+      <p>The model produces a probability score for each of the 9 constitution types. The highest-scoring type is returned as the primary constitution. Secondary constitutions (those scoring above a defined threshold) are also recorded. All nine scores are stored in the database for validation and research purposes.</p>
+
+      <pre><code>{
+  "primary_constitution": "phlegm_dampness",
+  "confidence_scores": {
+    "balanced": 0.04,
+    "qi_deficiency": 0.08,
+    "yang_deficiency": 0.05,
+    "yin_deficiency": 0.03,
+    "phlegm_dampness": 0.61,
+    "dampness_heat": 0.09,
+    "blood_stasis": 0.04,
+    "qi_stagnation": 0.04,
+    "special": 0.02
+  },
+  "model_version": "v1.0",
+  "scan_environment": "indoor"
+}</code></pre>
+    </section>
+
+    <!-- TRAINING DATA -->
+    <section class="section" id="training-data">
+      <h2>Training Data</h2>
+      <p>This is the most important distinction between Aiteaic's scanner and general-purpose AI tools applied to tongue images.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🗄️</div>
+        <div class="callout-body">
+          <strong>The model was trained on practitioner-labeled tongue images — not on text descriptions, not on general medical knowledge, and not on prompt engineering.</strong>
+          <p>Every image in the training dataset was labeled by a licensed TCM practitioner who examined the tongue and assigned a constitution classification. The model learned to see what they saw.</p>
+        </div>
+      </div>
+
+      <h3>Primary Dataset: TCM-Tongue</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Total images</td><td>6,719 high-quality tongue photographs</td></tr>
+          <tr><td>Annotation</td><td>20 pathological symptom categories</td></tr>
+          <tr><td>Label verification</td><td>All labels verified by licensed TCM practitioners</td></tr>
+          <tr><td>Capture conditions</td><td>Standardised lighting and camera settings</td></tr>
+          <tr><td>Formats</td><td>COCO, TXT, XML — cross-compatible</td></tr>
+          <tr><td>Benchmarked against</td><td>9 deep learning architectures (YOLOv5/v7/v8, SSD, MobileNetV2)</td></tr>
+          <tr><td>Repository</td><td>Dryad academic data repository (doi:10.5061/dryad.1c59zw48r)</td></tr>
+          <tr><td>Access</td><td>Open access — publicly auditable</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Why This Matters</h3>
+      <p>A model trained on this dataset has learned the visual patterns that licensed TCM practitioners associate with each constitution type — based on thousands of real clinical tongue examinations. This is the same type of supervised learning used in validated medical AI systems globally.</p>
+      <p>By contrast, a general-purpose vision model (such as GPT-4V or similar) asked to classify a tongue has no specialised training on tongue images and no reference to practitioner clinical judgments. Its responses are pattern-matched from general training data, not from clinical expertise on this specific diagnostic task.</p>
+    </section>
+
+    <!-- MODEL ARCHITECTURE -->
+    <section class="section" id="model-architecture">
+      <h2>Model Architecture</h2>
+      <p>The classification model is based on the architecture validated in the 2025 dual-center study (PMC12160370, Springer Nature / Chinese Medicine):</p>
+
+      <h3>Architecture: Hybrid MLP</h3>
+      <ul>
+        <li><strong>Input:</strong> Normalised, segmented tongue image</li>
+        <li><strong>Feature branch 1:</strong> 11 traditional tongue feature indices extracted via image analysis algorithms</li>
+        <li><strong>Feature branch 2:</strong> 26 deep feature vectors extracted by a convolutional backbone (ResNet / EfficientNet variant)</li>
+        <li><strong>Fusion:</strong> Both feature sets concatenated and fed into a Multilayer Perceptron</li>
+        <li><strong>Output:</strong> 9-class probability distribution (one score per constitution type)</li>
+      </ul>
+
+      <h3>Why a Trained Model, Not a Language Model</h3>
+      <p>A trained classification model with fixed weights is <strong>deterministic</strong> — the same image will always produce the same result. This is a non-negotiable requirement for a health and wellness tool. Language models are probabilistic by nature and cannot guarantee consistent output for the same input. Inconsistency in health guidance is not acceptable.</p>
+    </section>
+
+    <!-- QUESTIONNAIRE -->
+    <section class="section" id="questionnaire">
+      <h2>The Questionnaire Layer</h2>
+      <p>The tongue scan is the entry point. The questionnaire is the depth layer — and it is the more academically validated instrument.</p>
+      <p>Following the initial scan, users are presented with a shortened version of the <strong>Constitution in Chinese Medicine Questionnaire (CCMQ)</strong> — the gold-standard validated diagnostic instrument for the 9-constitution framework, developed by Wang Qi and endorsed by the China Association of Chinese Medicine in 2009.</p>
+
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Full CCMQ</td><td>60 questions, 9 subscales</td></tr>
+          <tr><td>App version (SF-WQ9CCMQ-A)</td><td>27 questions — validated short form</td></tr>
+          <tr><td>Scale</td><td>5-point Likert (1 = Never → 5 = Always)</td></tr>
+          <tr><td>Classification threshold</td><td>Transformed score ≥ 30 per subscale</td></tr>
+          <tr><td>Validated in</td><td>Multiple peer-reviewed studies indexed on PubMed</td></tr>
+        </tbody>
+      </table>
+
+      <p>When both scan and questionnaire are completed, the system cross-references the results. If they agree, confidence is high. If they differ, both are recorded and the user is shown the richer context — which is itself educational. Both results are stored separately in the database, enabling ongoing internal validation analytics.</p>
+    </section>
+
+    <!-- ACCURACY -->
+    <section class="section" id="accuracy">
+      <h2>Accuracy & Validation</h2>
+
+      <h3>Published Accuracy Benchmark</h3>
+      <p>The architecture Aiteaic is built on was independently validated in a peer-reviewed prospective study across two medical centers in 2025:</p>
+
+      <table>
+        <thead><tr><th>Metric</th><th>Training Set</th><th>Test Set</th></tr></thead>
+        <tbody>
+          <tr><td>Accuracy (ACC)</td><td>89.3%</td><td><strong>83.7%</strong></td></tr>
+          <tr><td>AUC (Area Under Curve)</td><td>0.948</td><td><strong>0.898</strong></td></tr>
+          <tr><td>Sensitivity</td><td>—</td><td>0.680</td></tr>
+          <tr><td>Specificity</td><td>—</td><td>0.930</td></tr>
+          <tr><td>Sample size</td><td colspan="2">1,374 participants across 2 medical centers</td></tr>
+          <tr><td>Source</td><td colspan="2">PMC12160370 · Springer Nature · Chinese Medicine · June 2025</td></tr>
+        </tbody>
+      </table>
+
+      <p>These figures are from the published paper — not internal claims. The paper is open access and readable in full at <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">pmc.ncbi.nlm.nih.gov/articles/PMC12160370</a>.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">📐</div>
+        <div class="callout-body">
+          <strong>What 83.7% means in context</strong>
+          <p>Experienced human TCM practitioners assessing the same tongue images show inter-rater agreement rates of approximately 70–80%. The AI's 83.7% test accuracy is within or above the range of expert human performance on tongue-only constitution assessment. This is a wellness tool — not a surgical diagnostic instrument. The 16.3% gap is further reduced when the questionnaire layer is combined with the scan.</p>
+        </div>
+      </div>
+
+      <h3>Validation Against External Reference System</h3>
+      <p>Aiteaic's validation methodology includes automated backtesting against external reference systems using the TCM-Tongue dataset. 1,000 labeled tongue images are processed through both systems and agreement rates are calculated. This produces a cross-system validation metric that does not require human reviewers and can be run at any scale.</p>
+    </section>
+
+    <!-- CONSISTENCY -->
+    <section class="section" id="consistency">
+      <h2>Consistency</h2>
+      <p>A trained classification model with fixed weights is <strong>mathematically deterministic</strong>. The same preprocessed image will always produce identical probability scores across any number of repeated inferences. There is no randomness in the classification step.</p>
+      <p>The only source of variation across repeated scans of the same person is in the image capture step — lighting conditions, tongue position, device camera. The preprocessing normalisation pipeline is designed to minimise this variance. Internal consistency tests are run on a set of controlled tongue images to verify output stability across simulated capture variations.</p>
+
+      <h3>Singapore Environment Testing</h3>
+      <p>Given the documented impact of humidity on tongue moisture presentation, consistency testing is specifically conducted across indoor (air-conditioned, approximately 22–24°C) and outdoor (ambient Singapore conditions, approximately 30–32°C, 80–90% humidity) capture conditions. This ensures the model remains robust to Singapore's characteristic indoor/outdoor environmental split.</p>
+    </section>
+
+    <!-- LIMITATIONS -->
+    <section class="section" id="limitations">
+      <h2>Known Limitations</h2>
+      <ul>
+        <li><strong>Image quality dependency:</strong> Very low light, extreme angles, or a partially extended tongue reduce classification confidence. The capture interface provides real-time guidance to minimise this.</li>
+        <li><strong>Tongue-only assessment:</strong> In traditional TCM practice, constitution is assessed using tongue, pulse, questionnaire, and physical examination together. Tongue-only classification is a valid approach but carries more uncertainty than a full clinical assessment.</li>
+        <li><strong>Training data geography:</strong> The primary training dataset was collected in clinical settings in China. Singapore-specific calibration is an active ongoing process as local scan data accumulates.</li>
+        <li><strong>Edge constitution types:</strong> The Inherited Special (特禀质) constitution has the smallest tongue signature difference from other types. Classification confidence for this type is lower than for constitutions with strong visual markers such as Blood Stasis or Phlegm-Dampness.</li>
+        <li><strong>Mixed constitutions:</strong> A person may present features of more than one constitution simultaneously. The model reports all constitutions scoring above threshold, but the primary result is the single highest-scoring type.</li>
+      </ul>
+    </section>
+
+    <!-- SOURCES -->
+    <section class="section" id="sources">
+      <h2>All Sources</h2>
+      <p>All research cited in this documentation is peer-reviewed and publicly accessible. Core sources are indexed on PubMed — the US National Institutes of Health's medical research database.</p>
+
+      <div class="source-item">
+        <span class="source-badge badge-springer">Springer</span>
+        <div class="source-body">
+          <div class="source-title">Study on a TCM constitution recognition model using tongue image characteristics and deep learning: a prospective dual-center investigation</div>
+          <div class="source-meta">Chinese Medicine · Springer Nature · June 2025 · PMC12160370 · 1,374 participants · 83.7% test accuracy · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12160370/" target="_blank">Read full paper →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-nih">NIH</span>
+        <div class="source-body">
+          <div class="source-title">Validation of the Constitution in Chinese Medicine Questionnaire: Does the TCM Concept of Body Constitution Exist?</div>
+          <div class="source-meta">Evidence-Based Complementary and Alternative Medicine · 2013 · PMC3655622 · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-springer">Springer</span>
+        <div class="source-body">
+          <div class="source-title">Development and evaluation of short-form version of the CCMQ</div>
+          <div class="source-meta">Chinese Medicine · Springer Nature · 2023 · PMC10617149 · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10617149/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-nih">NIH</span>
+        <div class="source-body">
+          <div class="source-title">Association between Nine Types of TCM Constitution and Five Chronic Diseases</div>
+          <div class="source-meta">Evidence-Based CAM · Wiley · 2017 · PMC5471571 · 2,660 participants · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5471571/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-nih">NIH</span>
+        <div class="source-body">
+          <div class="source-title">Objective Analysis of TCM Syndrome Differentiation in Tropical Climate (Singapore)</div>
+          <div class="source-meta">JMIR Research Protocols · 2024 · PMC11429662 · Singapore-specific · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11429662/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-gov">NTU SG</span>
+        <div class="source-body">
+          <div class="source-title">TCM Body Constitution Study of Patients with Hypertension (Singapore population)</div>
+          <div class="source-meta">Nanyang Technological University Research Repository · Singapore · <a href="https://dr.ntu.edu.sg/entities/publication/bada7576-ce45-438b-9618-0dbb478feda0" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-gov">MOH SG</span>
+        <div class="source-body">
+          <div class="source-title">MOH Speech at NTU Inaugural Singapore Global TCM Summit</div>
+          <div class="source-meta">Ministry of Health Singapore · Official government statement · <a href="https://www.moh.gov.sg/newsroom/speech-by-dr-koh-poh-koon--senior-minister-of-state-for-health-and-manpower--at-the-ntu-inaugural-singapore-global-tcm-summit" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-gov">Annals SG</span>
+        <div class="source-body">
+          <div class="source-title">Integrating Traditional Chinese Medicine into Disease Management in Singapore</div>
+          <div class="source-meta">Annals of the Academy of Medicine Singapore (MOH-affiliated journal) · <a href="https://annals.edu.sg/integrating-traditional-chinese-medicine-into-disease-management-in-singapore/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-oxford">Oxford</span>
+        <div class="source-body">
+          <div class="source-title">Traditional Chinese Medicine Body Constitution and Sleep Quality</div>
+          <div class="source-meta">SLEEP Advances · Oxford Academic · 2025 · <a href="https://academic.oup.com/sleepadvances/article/6/4/zpaf069/8285760" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-data">Dataset</span>
+        <div class="source-body">
+          <div class="source-title">TCM-Tongue: A Standardized Tongue Image Dataset with Pathological Annotations</div>
+          <div class="source-meta">Dryad Academic Data Repository · 6,719 images · Practitioner-verified labels · <a href="https://datadryad.org/dataset/doi:10.5061/dryad.1c59zw48r" target="_blank">Access dataset →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-nih">NIH</span>
+        <div class="source-body">
+          <div class="source-title">TongueNet: Multi-Modal Fusion and Multi-Label Classification for TCM Tongue Diagnosis</div>
+          <div class="source-meta">Frontiers in Physiology · April 2025 · <a href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1527751/full" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-gov">MOH SG</span>
+        <div class="source-body">
+          <div class="source-title">Singapore MOH TCM Sandbox Initiative — 18 Proposals for Public Healthcare Integration</div>
+          <div class="source-meta">National Neuroscience Institute · Singapore · <a href="https://www.nni.com.sg/news/announcements/moh-studying-18-proposals-to-integrate-tcm-into-public-healthcar" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="source-item">
+        <span class="source-badge badge-nih">NIH</span>
+        <div class="source-body">
+          <div class="source-title">Phlegm-Dampness Constitution: Genomics, Susceptibility, Adjustment and Treatment</div>
+          <div class="source-meta">PubMed · 23548117 · <a href="https://pubmed.ncbi.nlm.nih.gov/23548117/" target="_blank">Read →</a></div>
+        </div>
+      </div>
+
+      <div class="doc-footer">
+        <p>Aiteaic Scanner Documentation · Version 1.0 · June 2026 · Prepared by Atlas Media</p>
+        <p style="margin-top:8px;">For clinical partnership enquiries: <a href="mailto:admin@atlasmedia.sg">admin@atlasmedia.sg</a></p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.section');
+  const links = document.querySelectorAll('.sidebar a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
