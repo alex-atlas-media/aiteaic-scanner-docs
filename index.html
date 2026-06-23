@@ -466,6 +466,7 @@
       <a href="#training-data">Training Data</a>
       <a href="#model-architecture">Model Architecture</a>
       <a href="#questionnaire">Questionnaire Layer</a>
+      <a href="#product-engine">Product Recommendation</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Accuracy</div>
@@ -761,6 +762,18 @@
           <div class="pipeline-step-label">Result</div>
           <div class="pipeline-step-sub">Constitution + confidence</div>
         </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step" style="background:var(--green);color:#fff;">
+          <div class="pipeline-step-icon">🛍️</div>
+          <div class="pipeline-step-label" style="color:#fff;">Product Match</div>
+          <div class="pipeline-step-sub" style="color:rgba(255,255,255,0.8);">Instant lookup · no AI</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipeline-step-icon">📄</div>
+          <div class="pipeline-step-label">Report</div>
+          <div class="pipeline-step-sub">Generated from scan</div>
+        </div>
       </div>
 
       <h3>Step 1 — Image Capture</h3>
@@ -780,8 +793,13 @@
       </ul>
       <p>The combination of both feature types is the key finding of the 2025 dual-center validation study — using both significantly outperforms using either type alone.</p>
 
-      <h3>Step 5 — Output</h3>
       <p>The model produces a probability score for each of the 9 constitution types. The highest-scoring type is returned as the primary constitution. Secondary constitutions (those scoring above a defined threshold) are also recorded. All nine scores are stored in the database for validation and research purposes.</p>
+
+      <h3>Step 5 — Product Recommendation</h3>
+      <p>The moment a constitution is identified, the system performs an instant lookup against a curated constitution-to-product table. No AI model runs at this step — the result is a direct read from a static mapping. This is why product recommendations appear in the same response as the constitution result: there is no second network call, no inference latency, and no model uncertainty. The mapping is deterministic: the same constitution always returns the same primary product recommendation.</p>
+
+      <h3>Step 6 — Report Generation</h3>
+      <p>A structured wellness report is compiled immediately from the scan output — tongue indices, constitution probabilities, primary and secondary constitutions, confidence rating, and product recommendation. The report does not wait for the questionnaire. If a user chooses to personalise their results afterwards (see Questionnaire Layer), the refined recommendation is appended to the existing report. The scan report and any questionnaire data are stored as independent documents in Firestore, linked by session ID.</p>
 
       <pre><code>{
   "primary_constitution": "phlegm_dampness",
@@ -1034,22 +1052,105 @@
 
     <!-- QUESTIONNAIRE -->
     <section class="section" id="questionnaire">
-      <h2>The Questionnaire Layer</h2>
-      <p>The tongue scan is the entry point. The questionnaire is the depth layer — and it is the more academically validated instrument.</p>
-      <p>Following the initial scan, users are presented with a shortened version of the <strong>Constitution in Chinese Medicine Questionnaire (CCMQ)</strong> — the gold-standard validated diagnostic instrument for the 9-constitution framework, developed by Wang Qi and endorsed by the China Association of Chinese Medicine in 2009.</p>
+      <h2>Questionnaire: Personalise Your Results</h2>
+      <p>The tongue scan gives an immediate result. The questionnaire is optional — it exists to personalise the product recommendation and make it more applicable to the individual's specific lifestyle and symptoms. It does not change the constitution classification, which is determined entirely by the scan.</p>
 
+      <div class="callout info">
+        <div class="callout-icon">✅</div>
+        <div class="callout-body">
+          <strong>The scan is complete without the questionnaire</strong>
+          <p>Users receive their constitution result, wellness report, and primary product recommendation the moment the scan finishes. The questionnaire is an optional next step — offered as "Personalise your results" — for users who want a more tailored recommendation. It can be completed immediately or returned to later.</p>
+        </div>
+      </div>
+
+      <h3>What the Questionnaire Does</h3>
+      <p>Where the tongue scan identifies <em>what</em> constitution type you are, the questionnaire captures the <em>how</em> — which specific symptoms, lifestyle patterns, and health concerns are most prominent for you right now. This data is used to refine the product recommendation within your constitution type, matching you to the most relevant product from Aiteaic's range rather than the default primary product for your constitution.</p>
+
+      <h3>Format: 3-Step Refinement</h3>
       <table>
-        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <thead><tr><th>Step</th><th>Focus</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td>Full CCMQ</td><td>60 questions, 9 subscales</td></tr>
-          <tr><td>App version (SF-WQ9CCMQ-A)</td><td>27 questions — validated short form</td></tr>
-          <tr><td>Scale</td><td>5-point Likert (1 = Never → 5 = Always)</td></tr>
-          <tr><td>Classification threshold</td><td>Transformed score ≥ 30 per subscale</td></tr>
-          <tr><td>Validated in</td><td>Multiple peer-reviewed studies indexed on PubMed</td></tr>
+          <tr><td><strong>Step 1</strong></td><td>Energy &amp; body — fatigue, cold/heat sensitivity, digestion</td><td>Confirms or refines Qi / Yang / Yin deficiency weighting</td></tr>
+          <tr><td><strong>Step 2</strong></td><td>Skin, sleep &amp; mood — stress, sleep quality, skin condition</td><td>Distinguishes Phlegm-Dampness, Dampness-Heat, Qi Stagnation</td></tr>
+          <tr><td><strong>Step 3</strong></td><td>Lifestyle — diet, activity, environment</td><td>Singapore-specific calibration: hawker diet, AC exposure, humidity</td></tr>
         </tbody>
       </table>
+      <p>The 3-step format is designed to be completable in under 2 minutes. The number of steps and questions will expand as Aiteaic's Singapore dataset grows and product-match accuracy improves.</p>
 
-      <p>When both scan and questionnaire are completed, the system cross-references the results. If they agree, confidence is high. If they differ, both are recorded and the user is shown the richer context — which is itself educational. Both results are stored separately in the database, enabling ongoing internal validation analytics.</p>
+      <h3>Scoring</h3>
+      <p>The questionnaire scoring uses the validated Wang Qi CCMQ formula: <code>[(rawScore − items) / (items × 4)] × 100</code>, threshold ≥ 30 per subscale. This is the same formula used in the full clinical CCMQ (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3655622/" target="_blank">PMC3655622</a>), applied to the 3 targeted subscales most relevant to product differentiation.</p>
+
+      <h3>Future Development: TCM Institution Collaboration</h3>
+      <p>Aiteaic is actively pursuing formal collaboration with Singapore-based TCM institutions and practitioners to improve the precision of the product-to-constitution matching. The current recommendations are derived from published TCM dietary and lifestyle guidance for each constitution type — a solid research-based foundation. Institutional collaboration will layer clinical outcome data on top of this, matching products not just to constitutions but to specific symptom clusters observed in Singapore's population.</p>
+
+      <div class="callout note">
+        <div class="callout-icon">🤝</div>
+        <div class="callout-body">
+          <strong>TCM institution partnership — in progress</strong>
+          <p>Partnership discussions are underway with Singapore TCM clinics to incorporate practitioner-validated product recommendations. When formalised, each recommendation will cite the clinical basis for the product-constitution match, strengthening both the product's credibility and the platform's clinical standing.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT RECOMMENDATION ENGINE -->
+    <section class="section" id="product-engine">
+      <h2>Product Recommendation Engine</h2>
+      <p>The product recommendation is the first output a user sees after their constitution is identified. It requires no AI inference, no additional network call, and no latency beyond the scan itself. It is a direct lookup: constitution type in, product recommendation out.</p>
+
+      <h3>How It Works</h3>
+      <p>Aiteaic maintains a curated constitution-to-product mapping table. When the scan returns a primary constitution (e.g. <code>phlegm_dampness</code>), the system reads the corresponding entry from this table and returns it in the same API response as the constitution result. The entire operation is a single key lookup — computationally free and 100% deterministic.</p>
+
+      <pre style="background:#1E293B; color:#E2E8F0; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">// Pseudo-code: product recommendation
+const primaryConstitution = scanResult.primary.constitutionId;  // e.g. "phlegm_dampness"
+const recommendation = PRODUCT_TABLE[primaryConstitution];      // instant lookup
+// No model. No API call. No latency.
+
+// After optional questionnaire refinement:
+const refinedRecommendation = REFINED_TABLE[primaryConstitution][questionnaireProfile];</pre>
+
+      <h3>Why No AI Is Needed Here</h3>
+      <p>The recommendation problem is already solved by the scan. Once the constitution is known, the product match is a curation decision — which product best supports someone with this constitution — not a prediction problem. Curation is done once by Aiteaic's product and TCM knowledge team, encoded in the lookup table, and applied instantly at scale. Using an AI model for this step would add latency, non-determinism, and cost for no accuracy benefit.</p>
+
+      <h3>The 11-Product Range</h3>
+      <p>Aiteaic currently offers 11 wellness products, each formulated and positioned against specific TCM constitution needs. Each of the 9 constitution types maps to a primary recommended product. Where two constitutions are closely related (e.g. Qi Deficiency and Yang Deficiency both present with fatigue and cold sensitivity), they may share a primary recommendation, with the questionnaire refinement step distinguishing between them at the product level.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🛍️</div>
+        <div class="callout-body">
+          <strong>Product mapping is configurable without retraining</strong>
+          <p>Because the recommendation engine is a lookup table separate from the AI model, the product range can be updated, expanded, or regionalised without touching the classification system. Adding new products, adjusting mappings, or A/B testing recommendation logic requires only a table update — not a model retrain. This separation is intentional and a key operational advantage.</p>
+        </div>
+      </div>
+
+      <h3>Questionnaire Refinement Layer</h3>
+      <p>After completing the optional 3-step questionnaire, the product recommendation may be refined within the same constitution type. The refinement logic uses questionnaire subscale scores to select the best-matching product where multiple products serve the same constitution. The primary product recommendation (scan-only) remains visible alongside the refined recommendation so users can see the difference the additional context makes.</p>
+
+      <h3>Recommendation Accuracy Roadmap</h3>
+      <table>
+        <thead><tr><th>Phase</th><th>Recommendation Basis</th><th>Expected Match Quality</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Current (v1)</strong></td>
+            <td>Published TCM dietary and lifestyle guidance per constitution type — research-derived</td>
+            <td>Strong baseline — clinically consistent, not personalised beyond constitution</td>
+          </tr>
+          <tr>
+            <td><strong>v1.5 — Questionnaire active</strong></td>
+            <td>Constitution + 3-step lifestyle and symptom profile</td>
+            <td>More targeted — accounts for co-presenting symptoms and Singapore lifestyle factors</td>
+          </tr>
+          <tr>
+            <td><strong>v2 — TCM institution data</strong></td>
+            <td>Practitioner-validated constitution-to-product outcomes from Singapore clinics</td>
+            <td>Clinical-grade matching — products validated against real patient outcomes</td>
+          </tr>
+          <tr>
+            <td><strong>v3 — Outcome feedback loop</strong></td>
+            <td>User-reported outcomes + practitioner data + growing Singapore scan dataset</td>
+            <td>Continuously improving — Aiteaic's data moat compounds over time</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <!-- ACCURACY -->
@@ -1394,6 +1495,47 @@ Content-Type: application/json
       </div>
 
       <p>This is not a dependency or a weakness. It is a deliberate architectural decision: build the Singapore layer now, integrate clinical-grade classification when the API is ready and validated. The two components address completely different problems and are designed to be complementary.</p>
+
+      <h3>China Partner Integration — Data Continuity Strategy</h3>
+      <p>Aiteaic is in active dialogue with a China-based clinical AI partner whose tongue diagnosis model produces a structured JSON output that overlaps with Aiteaic's scan result schema. The integration strategy is designed to preserve all progress made on the Singapore side:</p>
+
+      <table>
+        <thead><tr><th>Component</th><th>What happens on integration</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Aiteaic in-house model</strong></td>
+            <td>Replaced or run in parallel by China partner's classification engine — this is a single endpoint swap</td>
+          </tr>
+          <tr>
+            <td><strong>Singapore scan data</strong></td>
+            <td>Retained in full — used to fine-tune the China model on Singapore's population. Our data becomes the calibration layer, not a throwaway.</td>
+          </tr>
+          <tr>
+            <td><strong>Product recommendation engine</strong></td>
+            <td>Unchanged — sits above the classification layer, completely independent</td>
+          </tr>
+          <tr>
+            <td><strong>Questionnaire layer</strong></td>
+            <td>Unchanged — the CCMQ scoring logic is model-agnostic</td>
+          </tr>
+          <tr>
+            <td><strong>User accounts and history</strong></td>
+            <td>Unchanged — Firestore documents are keyed by constitution type, not by which model produced it</td>
+          </tr>
+          <tr>
+            <td><strong>Report format</strong></td>
+            <td>JSON schema is aligned with China partner output — reports remain consistent before and after integration</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-body">
+          <strong>One endpoint swap — zero data loss</strong>
+          <p>The entire value of Aiteaic — the Singapore dataset, the product layer, the questionnaire, the user base — sits above the classification step. Switching the classification engine requires changing one environment variable. Every scan ever completed remains valid, comparable, and useful for the new model's calibration. This is the advantage of the layered architecture.</p>
+        </div>
+      </div>
     </section>
 
     <!-- DATA PRIVACY & PDPA -->
