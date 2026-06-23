@@ -387,6 +387,11 @@
       <a href="#clinical-api">Clinical API Layer</a>
     </div>
     <div class="sidebar-group">
+      <div class="sidebar-group-label">Verification</div>
+      <a href="#testing">Testing Framework</a>
+      <a href="#data">Training &amp; Test Data</a>
+    </div>
+    <div class="sidebar-group">
       <div class="sidebar-group-label">References</div>
       <a href="#sources">All Sources</a>
     </div>
@@ -1174,6 +1179,141 @@ Content-Type: application/json
       </div>
 
       <p>This is not a dependency or a weakness. It is a deliberate architectural decision: build the Singapore layer now, integrate clinical-grade classification when the API is ready and validated. The two components address completely different problems and are designed to be complementary.</p>
+    </section>
+
+    <!-- TESTING FRAMEWORK -->
+    <section class="section" id="testing">
+      <h2>Testing Framework</h2>
+      <p>Aiteaic's classifier is verified against four quantitative tests before any version ships. The test suite is open — anyone can download the same dataset and reproduce the results independently.</p>
+
+      <div class="callout info">
+        <div class="callout-icon">🧪</div>
+        <div class="callout-body">
+          <strong>Test suite: <code>test_suite.py</code></strong>
+          <p>Available in the <code>aiteassic-ai-engine</code> repository. Runs against the live API or local model weights. Produces a JSON report and a human-readable HTML dashboard. Run: <code>python test_suite.py --mode all --api https://your-space.hf.space --images path/to/test/images</code></p>
+        </div>
+      </div>
+
+      <h3>Test 1 — Accuracy</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Dataset</td><td>TCM-Tongue test split — 553 held-out images never seen during training</td></tr>
+          <tr><td>Method</td><td>Run all 553 images through model; compare predicted constitution to practitioner-assigned label</td></tr>
+          <tr><td>Target</td><td><strong>≥ 83.7%</strong> (matching PMC12160370 published benchmark)</td></tr>
+          <tr><td>Metric</td><td>Top-1 accuracy (primary constitution correct)</td></tr>
+          <tr><td>Per-class breakdown</td><td>Accuracy reported separately for each of 9 constitutions — identifies which types the model is weakest on</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test 2 — Consistency</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Method</td><td>20 test images, each run 10 times independently</td></tr>
+          <tr><td>Target</td><td><strong>100%</strong> — same image must always produce identical primary constitution</td></tr>
+          <tr><td>Why it matters</td><td>A wellness tool that gives different answers to the same person on different days is unusable. Fixed model weights guarantee determinism; this test verifies no randomness has crept in through preprocessing.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test 3 — Speed</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Method</td><td>100 images timed individually; latency distribution computed</td></tr>
+          <tr><td>Targets</td><td>p50 &lt; 2 seconds · p95 &lt; 5 seconds</td></tr>
+          <tr><td>Measured in</td><td>Wall-clock time from API POST to JSON response received</td></tr>
+          <tr><td>Environment</td><td>Hugging Face Spaces (free T4 GPU or CPU depending on tier)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test 4 — Singapore Distribution</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Method</td><td>500 images classified; output distribution compared to NTU Singapore population baseline</td></tr>
+          <tr><td>Target</td><td>Each constitution within ±10 percentage points of NTU published baseline</td></tr>
+          <tr><td>Baseline source</td><td>NTU Research Repository + <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11429662/" target="_blank">PMC11429662</a> (tropical climate study)</td></tr>
+          <tr><td>Expected Singapore distribution</td><td>Balanced ~22% · Phlegm-Dampness ~11.1% · Qi Deficiency ~9.5% · Yang Deficiency ~9.0%</td></tr>
+          <tr><td>Why it matters</td><td>A model miscalibrated for Singapore would over-predict balanced (too conservative) or under-predict phlegm-dampness (the most common unbalanced type in Singapore). This test catches systematic Singapore-calibration drift.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test 5 — CCMQ Alignment (Post-Launch)</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Method</td><td>Users who complete both scan and 27-question questionnaire create a paired validation record. Agreement rate is tracked over time.</td></tr>
+          <tr><td>Target</td><td><strong>≥ 65%</strong> agreement between scan result and questionnaire result</td></tr>
+          <tr><td>Baseline</td><td>Published human inter-rater agreement for experienced TCM practitioners doing tongue-only assessment is ~70%. ≥65% means the system is within the range of human expert performance.</td></tr>
+          <tr><td>Status</td><td>Starts accumulating at launch. Cannot be measured pre-launch.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Running the Tests</h3>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;"># Install dependencies
+pip install requests pillow numpy torch torchvision
+
+# Run all tests against the live API (recommended for production verification)
+python test_suite.py \
+  --api https://aiteaic-tongue-scanner.hf.space \
+  --images path/to/tcm_tongue/test/images \
+  --labels path/to/test_labels.json \
+  --mode all
+
+# Run only consistency + speed (no labels needed)
+python test_suite.py \
+  --api https://aiteaic-tongue-scanner.hf.space \
+  --images path/to/tcm_tongue/test/images \
+  --mode consistency,speed
+
+# Output
+# test_results/report_20260623_120000.json   — machine-readable
+# test_results/report_20260623_120000.html   — open in browser</pre>
+    </section>
+
+    <!-- TRAINING & TESTING DATA -->
+    <section class="section" id="data">
+      <h2>Training &amp; Testing Data</h2>
+
+      <h3>Dataset: TCM-Tongue</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Total images</td><td>6,719</td></tr>
+          <tr><td>Training split</td><td>5,594 images (83.3%)</td></tr>
+          <tr><td>Validation split</td><td>572 images (8.5%)</td></tr>
+          <tr><td>Test split</td><td><strong>553 images (8.2%)</strong> — held out, never used in training</td></tr>
+          <tr><td>Format</td><td>JPEG images + COCO/TXT/XML annotations (20 pathological categories)</td></tr>
+          <tr><td>File size</td><td>2.34 GB compressed</td></tr>
+          <tr><td>Licence</td><td><strong>CC0</strong> — public domain, commercial use permitted, no attribution required</td></tr>
+          <tr><td>Download</td><td><a href="https://datadryad.org/dataset/doi:10.5061/dryad.1c59zw48r" target="_blank">datadryad.org/dataset/doi:10.5061/dryad.1c59zw48r</a></td></tr>
+          <tr><td>Dataset paper</td><td><a href="https://arxiv.org/abs/2507.18288" target="_blank">arxiv.org/abs/2507.18288</a></td></tr>
+          <tr><td>Developed with</td><td>Xiyuan Hospital, China Academy of Chinese Medical Sciences</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test Image Label Map</h3>
+      <p>The 553 test images have been labeled with their primary TCM constitution based on the tongue feature annotation in the dataset. The label map is available for independent verification of accuracy claims. Format:</p>
+      <pre style="background:var(--code-bg); padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; line-height:1.6;">{
+  "tongue_001.jpg": "phlegm_dampness",
+  "tongue_002.jpg": "yin_deficiency",
+  "tongue_003.jpg": "balanced",
+  ...
+}</pre>
+      <p>The labeling logic maps each image's dominant annotated tongue feature to its primary constitution type per Wang Qi ZYYXH/T157-2009 standard (e.g. greasy coating → Phlegm-Dampness, cracks → Yin Deficiency). The full mapping is defined in <code>train_colab.py</code> → <code>FEATURE_TO_PRIMARY_CONSTITUTION</code>.</p>
+
+      <h3>Data Split Integrity</h3>
+      <div class="callout warning">
+        <div class="callout-icon">🔒</div>
+        <div class="callout-body">
+          <strong>The 553 test images are never used during training</strong>
+          <p>The test split follows the TCM-Tongue dataset's pre-defined split boundaries. The model is trained on the 5,594 training images only, tuned on the 572 validation images, and evaluated on the 553 test images — exactly once. Any reported accuracy figure refers to this held-out test set. Training on test data would inflate accuracy figures and violate standard ML evaluation practice.</p>
+        </div>
+      </div>
+
+      <h3>Future Test Data: Singapore-Specific</h3>
+      <p>As users scan with the app, a growing subset of Singapore-resident scans with completed CCMQ questionnaires will form a secondary, Singapore-specific test set. This is the first such dataset in existence. It will be used for the CCMQ alignment test (Test 5) and for ongoing Singapore distribution calibration. All data is anonymised and aggregate.</p>
     </section>
 
     <!-- SOURCES -->
